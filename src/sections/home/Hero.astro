@@ -1,0 +1,55 @@
+---
+import MainButton from '@/components/ui/MainButton.astro'
+import { ArrowRight02Icon, Briefcase01Icon, Car01Icon, HealtcareIcon, Tick02Icon } from '@hugeicons/core-free-icons'
+import { HugeiconsIcon } from '@hugeicons/react'
+import type { IconSvgElement } from '@hugeicons/react'
+
+export interface ServiceProps {
+  label: string
+  icon: IconSvgElement
+}
+
+const insurances: ServiceProps[] = [
+  { label: "Business", icon: Briefcase01Icon },
+  { label: "Personal", icon: Car01Icon },
+  { label: "Benefits", icon: HealtcareIcon }
+]
+---
+
+<section class="my-24 max-w-8xl mx-auto relative reveal-fade px-8 2xl:px-0">
+  <div class="relative">
+    <div class="absolute z-30 top-6 left-6 bottom-18 w-3xl gradient-inszone-dark rounded-3xl text-white p-14 flex flex-col gap-6 justify-center">
+      <div class="flex flex-col gap-2">
+        <h1 class="reveal-left text-5xl font-semibold">Real relationships.<br>Local agents.<br>National support.</h1>
+        <h2 class="reveal-left text-3xl text-primary-300 font-medium">Personal, Commercial, and Benefits Insurance</h2>
+      </div>
+      <div class="flex flex-col gap-4 reveal-left">
+        <h3 class="font-semibold text-lg leading-none">Get a Free Quote Today</h3>
+        <div class="flex gap-4">
+          { insurances.map(({ label, icon }) => (
+            <div class="flex-1 active:scale-95 transition-transform">
+              <input type="radio" id={ label } name="insurance" class="sr-only peer">
+              <label for={ label } class="relative flex items-center gap-2 bg-white/8 hover:bg-white/16 peer-checked:bg-white/24 peer-checked:[&_.tick]:opacity-100 cursor-pointer rounded-lg p-4 transition">
+                <span class="tick opacity-0 absolute top-2 right-2 size-5 rounded-full bg-primary-950 flex items-center justify-center">
+                  <HugeiconsIcon icon={ Tick02Icon } size={ 12 } strokeWidth={ 4 } />
+                </span>
+                <HugeiconsIcon icon={ icon } size={ 48 } strokeWidth={ 1 } />
+                <span class="font-semibold">{ label }</span>
+              </label>
+            </div>
+            ))
+          }
+        </div>
+        <div class="flex">
+          <input type="text" placeholder="Enter Zip Code" class="placeholder-white px-6 h-16 flex-1 border-2 border-r-0 border-primary rounded-tl-lg rounded-bl-lg">
+          <MainButton icon={ ArrowRight02Icon } iconStroke={ 2 } size="lg" variant="main" class="rounded-tl-none rounded-bl-none">
+            Start My Quote
+          </MainButton>
+        </div>
+      </div>
+    </div>
+    <img src="/images/shape.svg" alt="Shape" class="absolute bottom-0 left-0 w-full h-24 z-30 object-cover object-bottom-left"/>
+    <img src="/images/inszone-insurance-services.webp" alt="" class="min-h-160 rounded-3xl rounded-tl-[3rem] rounded-bl-[6rem] overflow-hidde z-10 object-cover object-bottom">
+    <img src="/images/inszone-insurance-services-man.webp" alt="" class="absolute min-h-[662px] rounded-3xl bottom-0 left-0 z-20 object-cover object-bottom">
+  </div>
+</section>

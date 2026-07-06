@@ -1,0 +1,181 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-SemiBoldItalic.woff2') format('woff2');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-BlackItalic.woff2') format('woff2');
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-BoldItalic.woff2') format('woff2');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-ExtraBold.woff2') format('woff2');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-ExtraBoldItalic.woff2') format('woff2');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-Italic.woff2') format('woff2');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-MediumItalic.woff2') format('woff2');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter18pt-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  font-family: "Inter", sans-serif;
+  color: var(--color-neutral-600);
+  --transition-inszone: all cubic-bezier(0.32,0.72,0,1);
+}
+
+@theme {
+  --color-primary: #6F8CC0;
+  --color-primary-50: #F3F6FB;
+  --color-primary-100: #E3EBF6;
+  --color-primary-200: #BECCE3;
+  --color-primary-300: #A4B6D8;
+  --color-primary-400: #89A1CC;
+  --color-primary-500: #6F8CC0;
+  --color-primary-600: #5979A9;
+  --color-primary-700: #436692;
+  --color-primary-800: #2C547C;
+  --color-primary-900: #164165;
+  --color-primary-950: #002E4E;
+  --color-neutral-50: #F9FAFB;
+  --color-neutral-100: #F3F4F6;
+  --color-neutral-200: #E5E7EB;
+  --color-neutral-300: #D1D5DC;
+  --color-neutral-400: #99A1AF;
+  --color-neutral-500: #6A7282;
+  --color-neutral-600: #4A5565;
+  --color-neutral-700: #364153;
+  --color-neutral-800: #1E2939;
+  --color-neutral-900: #101828;
+  --color-neutral-950: #020618;
+  --container-8xl: 1320px;
+}
+
+@layer {
+  .transition-inszone {
+    transition: var(--transition-inszone) 0.8s;
+  }
+  .shadow-inszone {
+    box-shadow: 0 12px 56px rgba(0,46,78,0.08);
+  }
+  .gradient-inszone {
+    background: linear-gradient(45deg, var(--color-primary-600) 0%, var(--color-primary-400) 100%);
+  }
+  .gradient-inszone-dark {
+    background: linear-gradient(45deg, var(--color-primary-950) 0%, var(--color-primary-800) 100%);
+  }
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translate3d(-120px, 0, 0);
+  transition: var(--transition-inszone) 1.2s;
+  visibility: hidden;
+}
+
+.reveal-left__visible {
+  visibility: visible;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translate3d(0, 120px, 0);
+  transition: var(--transition-inszone) 1.2s;
+  visibility: hidden;
+}
+
+.reveal-up__visible {
+  visibility: visible;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.reveal-fade {
+  opacity: 0;
+  transition: var(--transition-inszone) 1.2s;
+}
+
+.reveal-fade__visible {
+  opacity: 1;
+}
