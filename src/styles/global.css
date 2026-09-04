@@ -28,7 +28,7 @@
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter18pt-Bold.woff2') format('woff2');
-  font-weight: bold;
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -36,7 +36,7 @@
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter18pt-BoldItalic.woff2') format('woff2');
-  font-weight: bold;
+  font-weight: 700;
   font-style: italic;
   font-display: swap;
 }
@@ -44,7 +44,7 @@
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter18pt-ExtraBold.woff2') format('woff2');
-  font-weight: bold;
+  font-weight: 800;
   font-style: normal;
   font-display: swap;
 }
@@ -52,7 +52,7 @@
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter18pt-ExtraBoldItalic.woff2') format('woff2');
-  font-weight: bold;
+  font-weight: 800;
   font-style: italic;
   font-display: swap;
 }
@@ -68,7 +68,7 @@
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter18pt-Italic.woff2') format('woff2');
-  font-weight: normal;
+  font-weight: 400;
   font-style: italic;
   font-display: swap;
 }
@@ -76,7 +76,7 @@
 @font-face {
   font-family: 'Inter';
   src: url('/fonts/Inter18pt-Regular.woff2') format('woff2');
-  font-weight: normal;
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -100,10 +100,20 @@
 :root {
   font-family: "Inter", sans-serif;
   color: var(--color-neutral-600);
-  --transition-inszone: all cubic-bezier(0.32,0.72,0,1);
+  --transition-inszone: all var(--ease-app);
 }
 
-@theme {
+/* `static` keeps every token in the output even when nothing references it yet,
+   so /design-system can read the whole ramp back off :root. */
+@theme static {
+  /* Project easing curve. Overriding `--default-transition-timing-function`
+     makes EVERY Tailwind `transition-*` utility use this bezier automatically,
+     so components don't have to remember to ask for it; `--ease-app` is the
+     same curve exposed for hand-written CSS and for JS-driven animation.
+     Shared with the Inszone intranet design system. */
+  --default-transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-app: cubic-bezier(0.32, 0.72, 0, 1);
+
   --color-primary: #6F8CC0;
   --color-primary-50: #F3F6FB;
   --color-primary-100: #E3EBF6;
@@ -128,6 +138,13 @@
   --color-neutral-900: #101828;
   --color-neutral-950: #020618;
   --container-8xl: 1320px;
+  /* Face for the outlined watermark in the stats band, and nothing else.
+     Deliberately NOT Inter: `-webkit-text-stroke` traces every contour of a
+     glyph, and Inter builds P, R and N from overlapping components, so the
+     outline gets seams drawn through the letters. Arial and Helvetica have
+     merged outlines and stroke cleanly. The source design does the same thing
+     — its watermark rule asks for generic `sans-serif`, not the body face. */
+  --font-display: Arial, Helvetica, sans-serif;
 }
 
 @layer {
@@ -178,4 +195,73 @@
 
 .reveal-fade__visible {
   opacity: 1;
+}
+
+/* Holds an element back so it reveals AFTER a sibling it shares a section with.
+   The reveal queue staggers in the order elements cross the viewport edge,
+   which for two stacked blocks is whichever sits higher — not necessarily the
+   one that should move first. This states the order instead of inferring it.
+   Must stay unlayered and after the `.reveal-*` rules, whose `transition`
+   shorthand would otherwise reset the delay back to 0. */
+.reveal-after {
+  transition-delay: 0.35s;
+}
+
+
+/* Draws a single continuous stroke once it scrolls into view — used by the
+   process diagram's connector. The path publishes its own measured length as
+   `--draw-length` (see ProcessLine.astro) — measured rather than normalised with
+   `pathLength`, which misbehaves alongside `vector-effect`. */
+.reveal-draw path {
+  stroke-dasharray: var(--draw-length);
+  stroke-dashoffset: var(--draw-length);
+}
+
+.reveal-draw__visible path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 2.4s var(--ease-app);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-draw path,
+  .reveal-draw__visible path {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+}
+
+/* ─── Hero notch ─────────────────────────────────────────────────────────────
+   The scooped corner at the bottom-left of the hero.
+
+   Rather than painting the shape on top in the colour of whatever sits behind
+   it — which breaks the moment that section's background changes — this masks
+   the shape OUT of the photo, so the section underneath genuinely shows
+   through the gap.
+
+   Two mask layers: a solid block covering everything above the notch band, and
+   the notch itself (a rect with the shape punched out via `fill-rule="evenodd"`)
+   pinned bottom-left at its natural 1320x96.
+
+   Applied to the photo ONLY, never to the hero wrapper. A mask clips to its own
+   box, and the figure cut-out deliberately pokes ~22px above the frame — masking
+   the wrapper would slice the top off it. The notch sits at the far left, well
+   clear of the figure, so the photo is the only layer that needs it. */
+.hero-notch {
+  --hero-notch-height: 96px;
+  --hero-notch-width: 1320px;
+  --hero-notch-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1320 96' preserveAspectRatio='none'%3E%3Cpath fill='%23fff' fill-rule='evenodd' d='M0 0h1320v96H0Z M650.1,72h0c-15.4-15.4-36.2-24-57.9-24H48C21.5,48,0,26.5,0,0h0v96h708c-21.7,0-42.6-8.6-57.9-24Z'/%3E%3C/svg%3E");
+
+  -webkit-mask-image: linear-gradient(#000, #000), var(--hero-notch-shape);
+  mask-image: linear-gradient(#000, #000), var(--hero-notch-shape);
+  -webkit-mask-size:
+    100% calc(100% - var(--hero-notch-height)),
+    var(--hero-notch-width) var(--hero-notch-height);
+  mask-size:
+    100% calc(100% - var(--hero-notch-height)),
+    var(--hero-notch-width) var(--hero-notch-height);
+  -webkit-mask-position: left top, left bottom;
+  mask-position: left top, left bottom;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }

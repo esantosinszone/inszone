@@ -1,0 +1,40 @@
+---
+/** Tinted panel: pitch on the left, three value cards on the right. */
+import { features } from '@/data/home'
+import ArrowRightIcon from '@/components/icons/ArrowRightIcon.astro'
+import Button from '@/components/ui/Button.astro'
+import Card from '@/components/ui/Card.astro'
+import FeatureCard from '@/components/ui/FeatureCard.astro'
+import Typography from '@/components/ui/Typography.astro'
+---
+
+<section class="bg-white px-4 md:px-6">
+  <Card
+    tone="tint"
+    class="mx-auto flex max-w-[1480px] flex-col items-start gap-5 px-5 pt-8 pb-10 md:gap-8 md:px-8 md:py-10 xl:flex-row xl:gap-12 xl:p-20"
+  >
+    <div class="flex w-full shrink-0 flex-col gap-1 xl:w-80">
+      <Typography
+        variant="inherit"
+        as="h2"
+        class="reveal-left text-xl leading-none font-bold text-primary-500 md:text-[32px]"
+      >
+        <strong class="block font-bold text-primary-950 md:inline">An Insurance Provider</strong>
+        with a Proven Strategy to Help You
+      </Typography>
+      <Typography variant="body" class="reveal-left hidden md:block">
+        Smarter insurance solutions made for you. Get expert guidance, save on premiums, and manage
+        your policy with ease.
+      </Typography>
+      <Button href="/quote" size="lg" icon={ ArrowRightIcon } class="reveal-left mt-6 self-start">
+        Request a quote
+      </Button>
+    </div>
+
+    <div class="flex w-full flex-1 items-stretch gap-3 md:gap-6">
+      { features.map(( feature ) => (
+        <FeatureCard { ...feature } class="reveal-up" />
+      ))}
+    </div>
+  </Card>
+</section>

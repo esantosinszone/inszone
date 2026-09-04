@@ -1,0 +1,84 @@
+---
+/**
+ * Scroll-snap carousel. The track is a plain horizontally scrolling flex row,
+ * so it works with no JS at all; `carousel.ts` only wires up the arrows and
+ * the bullets on top of the native scrolling.
+ *
+ * Above `md` the `layout="grid"` variant drops the scrolling entirely and lays
+ * the slides out as a static grid — used where the design shows all cards at
+ * once on desktop.
+ */
+import ArrowButton from '@/components/ui/ArrowButton.astro'
+
+interface Props {
+  /** Unique per page — ties the track, arrows and bullets together. */
+  id: string
+  /** How many bullets to render (one per page of slides). */
+  pages?: number
+  /** Advance every N milliseconds; omit or 0 to leave it manual. Pauses on hover and focus. */
+  autoplay?: number
+  layout?: 'carousel' | 'grid'
+  columns?: number
+  class?: string
+  trackClass?: string
+}
+
+const { id, pages = 4, autoplay, layout = 'carousel', columns = 2, class: className, trackClass } = Astro.props
+---
+
+<div
+  class:list={ [ 'flex min-w-0 flex-col', className ] }
+  data-carousel-id={ id }
+  data-carousel-autoplay={ autoplay }
+  data-carousel-layout={ layout }
+  style={ `--carousel-columns:${ columns }` }
+>
+  <div class="relative">
+    <ArrowButton
+      direction="prev"
+      data-carousel-prev={ id }
+      class="absolute top-1/2 -left-18 z-5 hidden -translate-y-1/2 min-[1520px]:inline-flex"
+    />
+    <ArrowButton
+      direction="next"
+      data-carousel-next={ id }
+      class="absolute top-1/2 -right-18 z-5 hidden -translate-y-1/2 min-[1520px]:inline-flex"
+    />
+    <div
+      role="list"
+      data-carousel-track={ id }
+      class:list={ [
+        'flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth px-1 pt-2 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:snap-start md:gap-10',
+        layout === 'grid' &&
+          'md:grid md:grid-cols-(--carousel-grid-cols) md:overflow-visible md:p-0',
+        trackClass,
+      ] }
+      style={ layout === 'grid' ? `--carousel-grid-cols:repeat(${ columns },minmax(0,1fr))` : undefined }
+    >
+      <slot />
+    </div>
+  </div>
+  <div
+    class:list={ [
+      'inline-flex items-center gap-2 self-center',
+      layout === 'grid' && 'md:hidden',
+    ] }
+    role="tablist"
+    aria-label="Slides"
+    data-carousel-bullets={ id }
+  >
+    { Array.from({ length: pages }, ( _, index ) => (
+      <button
+        type="button"
+        role="tab"
+        data-index={ index }
+        aria-label={ `Slide ${ index + 1 }` }
+        aria-selected={ index === 0 ? 'true' : 'false' }
+        class:list={ [
+          'h-2.5 cursor-pointer rounded-full border-none p-0 transition-[width,background-color] duration-200',
+          index === 0 ? 'w-[34px] bg-primary-500' : 'w-2.5 bg-primary-200 hover:bg-primary-400',
+        ] }
+      />
+    ))}
+  </div>
+</div>

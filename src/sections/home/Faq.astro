@@ -1,0 +1,36 @@
+---
+/** Accordion list of the most common customer questions. */
+import { faqs } from '@/data/home'
+import ArrowRightIcon from '@/components/icons/ArrowRightIcon.astro'
+import Accordion from '@/components/ui/Accordion.astro'
+import Button from '@/components/ui/Button.astro'
+import Typography from '@/components/ui/Typography.astro'
+---
+
+<section class="rounded-t-3xl bg-white px-4 pt-10 md:rounded-none md:px-6 md:pt-25 md:pb-20">
+  <div class="mx-auto flex w-full max-w-[1020px] flex-col gap-8">
+    <div class="flex flex-col gap-3">
+      <Typography variant="inherit" as="p" class="reveal-left text-sm leading-none font-medium text-neutral-600 md:text-2xl">
+        Help &amp; Support
+      </Typography>
+      <Typography variant="h2" class="reveal-left">Frequently Asked Questions</Typography>
+      <Typography variant="body" class="reveal-left">
+        Explore answers to our most common customer questions. Our FAQ section offers clear
+        explanations and guidance to help you understand our services, policies, and processes with
+        ease.
+      </Typography>
+    </div>
+
+    <div class="flex flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white md:rounded-lg">
+      { faqs.map(({ question, answer }, index) => (
+        <Accordion title={ question } open={ index === 0 } group="faq" class="border-b border-neutral-200 last:border-b-0">
+          <Fragment set:html={ answer } />
+        </Accordion>
+      ))}
+    </div>
+
+    <div class="flex justify-center">
+      <Button href="/faqs" variant="soft" size="lg" icon={ ArrowRightIcon } class="reveal-up">Read More</Button>
+    </div>
+  </div>
+</section>

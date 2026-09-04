@@ -1,0 +1,74 @@
+---
+/** Blog slide: full-bleed photo with a frosted panel pinned to the bottom. */
+import ArrowRightSmallIcon from '@/components/icons/ArrowRightSmallIcon.astro'
+import Typography from '@/components/ui/Typography.astro'
+
+interface Props {
+  title: string
+  href: string
+  image: string
+  imageAlt: string
+  date: { weekday: string, day: string, month: string }
+  author: string
+  readingTime: string
+  class?: string
+}
+
+const { title, href, image, imageAlt, date, author, readingTime, class: className } = Astro.props
+---
+
+<a
+  href={ href }
+  role="listitem"
+  class:list={ [
+    'reveal-up group relative block h-60 w-[calc(50%-6px)] shrink-0 overflow-hidden rounded-lg no-underline md:h-[413px] md:w-[min(413px,85vw)] md:rounded-2xl',
+    'after:pointer-events-none after:absolute after:inset-0 after:bg-linear-to-b after:from-transparent after:from-39% after:to-black/64',
+    className,
+  ] }
+>
+  <img src={ image } alt={ imageAlt } loading="lazy" class="absolute inset-0 size-full object-cover" />
+  <div
+    class="absolute inset-0 bg-primary-950/50 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+    aria-hidden="true"
+  >
+  </div>
+  <div
+    class="absolute inset-x-0 bottom-0 z-1 rounded-t-lg bg-neutral-950/24 backdrop-blur-lg transition-colors duration-400 group-hover:bg-primary-950/50 md:rounded-t-2xl"
+  >
+    <div class="flex flex-col items-start gap-1 border-b border-white/20 p-3 md:min-h-[110px] md:flex-row md:items-center md:gap-0 md:p-0">
+      <div
+        class="flex shrink-0 flex-row items-center gap-[3px] text-center text-white md:h-[110px] md:flex-col md:justify-center md:gap-0 md:border-r md:border-white/20 md:px-6"
+      >
+        <span class="text-[10px] leading-tight font-medium uppercase md:text-xs md:font-normal">{ date.weekday }</span>
+        <span class="order-2 text-[10px] leading-tight font-medium uppercase md:order-none md:py-2 md:text-[40px] md:leading-[0.8] md:font-extrabold">
+          { date.day }
+        </span>
+        <span class="order-1 text-[10px] leading-tight font-medium uppercase md:order-none md:text-base md:font-normal md:normal-case">
+          { date.month }
+        </span>
+      </div>
+      <div class="w-full min-w-0 flex-1 md:px-6 md:py-4">
+        <Typography
+          variant="inherit"
+          as="p"
+          clamp={ 3 }
+          class="max-h-[3.3em] text-sm leading-tight font-bold text-white md:text-2xl md:leading-[1.1]"
+        >
+          { title }
+        </Typography>
+      </div>
+    </div>
+    <div class="flex h-auto items-center justify-center gap-3 px-3 py-1 md:h-18 md:justify-between md:py-3 md:pr-3 md:pl-6">
+      <div class="hidden min-w-0 text-sm leading-tight text-neutral-200 md:block">
+        <p>Author: { author }</p>
+        <p>Estimated reading time: { readingTime }</p>
+      </div>
+      <span class="inline-flex shrink-0 items-center gap-2 p-2 text-sm leading-none font-semibold whitespace-nowrap text-primary-300 md:p-3 md:text-base">
+        Read more
+        <span class="inline-flex size-4 transition-transform duration-250 group-hover:translate-x-1">
+          <ArrowRightSmallIcon />
+        </span>
+      </span>
+    </div>
+  </div>
+</a>

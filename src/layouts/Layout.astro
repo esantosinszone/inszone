@@ -1,6 +1,7 @@
 ---
 import Head from '@/components/Head.astro'
 import Header from '@/components/Header.astro'
+import Footer from '@/components/Footer.astro'
 import '@/styles/global.css'
 interface Props {
 	title?: string
@@ -16,15 +17,18 @@ const { title, description, image } = Astro.props
   <body data-scroll-container>
     <Header/>
     <main data-scroll-section>
-      hehe
       <slot />
     </main>
+    <Footer/>
   </body>
 </html>
 
 <script>
   import LocomotiveScroll from 'locomotive-scroll'
-  import { RevealFade, RevealLeft, RevealUp } from '@/scripts/reveal'
+  import { initReveal } from '@/scripts/reveal'
+  import { initCarousels } from '@/scripts/carousel'
+  import { initCounters } from '@/scripts/counter'
+  import { initAccordions } from '@/scripts/accordion'
 
   interface ScrollInstance {
     destroy: () => void
@@ -39,22 +43,16 @@ const { title, description, image } = Astro.props
 
     window.scrollTo(0, 0)
 
-    const revealUp = new RevealUp()
-    revealUp.observe()
-    const revealLeft = new RevealLeft()
-    revealLeft.observe()
-    const revealFade = new RevealFade()
-    revealFade.observe()
+    initReveal()
+    initCarousels()
+    void initCounters()
+    initAccordions()
 
-    locomotiveScroll = new LocomotiveScroll({
-      smooth: true,
-      mobile: {
-        smooth: false
-      },
-      tablet: {
-        smooth: false
-      }
-    } as any)
+    // v5 is a different library from v4: it's built on Lenis and takes
+    // `lenisOptions` / `triggerRootMargin` / `autoStart`. The old v4 keys
+    // (`smooth`, `mobile`, `tablet`) don't exist here and were being dropped
+    // silently. Smooth wheel and touch handling are v5 defaults.
+    locomotiveScroll = new LocomotiveScroll()
   }
 
   document.addEventListener("astro:page-load", () => {

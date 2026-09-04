@@ -1,0 +1,416 @@
+---
+/**
+ * Live catalogue of every building block the marketing site is made of,
+ * following the same structure as the intranet's `/design-system`: colour and
+ * type first, then the components, each in a framed demo.
+ */
+import DocsLayout from '@/layouts/DocsLayout.astro'
+import DocHeader from '@/components/design-system/DocHeader.astro'
+import DocSection from '@/components/design-system/DocSection.astro'
+import Demo from '@/components/design-system/Demo.astro'
+import Swatch from '@/components/design-system/Swatch.astro'
+
+import Typography from '@/components/ui/Typography.astro'
+import Button from '@/components/ui/Button.astro'
+import Card from '@/components/ui/Card.astro'
+import Accordion from '@/components/ui/Accordion.astro'
+import ArrowButton from '@/components/ui/ArrowButton.astro'
+import Carousel from '@/components/ui/Carousel.astro'
+import Marquee from '@/components/ui/Marquee.astro'
+import Stars from '@/components/ui/Stars.astro'
+import RatingCard from '@/components/ui/RatingCard.astro'
+import ReviewCard from '@/components/ui/ReviewCard.astro'
+import PolicyCard from '@/components/ui/PolicyCard.astro'
+import FeatureCard from '@/components/ui/FeatureCard.astro'
+import StatCard from '@/components/ui/StatCard.astro'
+import BlogCard from '@/components/ui/BlogCard.astro'
+import SectionHeading from '@/components/ui/SectionHeading.astro'
+
+import ArrowRightIcon from '@/components/icons/ArrowRightIcon.astro'
+import ArrowRightSmallIcon from '@/components/icons/ArrowRightSmallIcon.astro'
+import ChevronCircleIcon from '@/components/icons/ChevronCircleIcon.astro'
+import SocialIcon from '@/components/icons/SocialIcon.astro'
+import TrustedChoiceBadge from '@/components/icons/TrustedChoiceBadge.astro'
+import FileSecurityIcon from '@/components/icons/FileSecurityIcon.astro'
+import BalanceScaleIcon from '@/components/icons/BalanceScaleIcon.astro'
+import ShieldUserIcon from '@/components/icons/ShieldUserIcon.astro'
+import Agreement02Icon from '@/components/icons/Agreement02Icon.astro'
+import HealthcareIcon from '@/components/icons/HealthcareIcon.astro'
+import Briefcase01Icon from '@/components/icons/Briefcase01Icon.astro'
+import Car01Icon from '@/components/icons/Car01Icon.astro'
+import UmbrellaIcon from '@/components/icons/UmbrellaIcon.astro'
+import PiggyBankIcon from '@/components/icons/PiggyBankIcon.astro'
+import TaskDone01Icon from '@/components/icons/TaskDone01Icon.astro'
+import Navigation03Icon from '@/components/icons/Navigation03Icon.astro'
+import Location05Icon from '@/components/icons/Location05Icon.astro'
+import UserGroup03Icon from '@/components/icons/UserGroup03Icon.astro'
+import HandshakeIcon from '@/components/icons/HandshakeIcon.astro'
+
+import { carriers, features, policies, posts, ratings, reviews, stats } from '@/data/home'
+
+const SECTIONS = [
+  { id: 'color', label: 'Color' },
+  { id: 'typography', label: 'Typography' },
+  { id: 'buttons', label: 'Buttons' },
+  { id: 'surfaces', label: 'Surfaces' },
+  { id: 'accordion', label: 'Accordion' },
+  { id: 'carousel', label: 'Carousel' },
+  { id: 'marquee', label: 'Marquee' },
+  { id: 'ratings', label: 'Ratings & reviews' },
+  { id: 'content-cards', label: 'Content cards' },
+  { id: 'stats', label: 'Stats' },
+  { id: 'icons', label: 'Icons' },
+  { id: 'motion', label: 'Motion' },
+]
+
+const SCALE = [ '50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950' ]
+
+const TYPE_SPECIMENS = [
+  { variant: 'display', note: '40 → 56px extrabold — hero headline' },
+  { variant: 'h1', note: '32 → 48px bold' },
+  { variant: 'h2', note: '20 → 40px bold — every section title' },
+  { variant: 'h3', note: '20 → 32px bold' },
+  { variant: 'h4', note: '18 → 24px bold' },
+  { variant: 'h5', note: '18 → 20px bold' },
+  { variant: 'h6', note: '16px bold' },
+  { variant: 'lead', note: '16 → 18px — intro paragraph' },
+  { variant: 'body', note: '14 → 16px — default paragraph' },
+  { variant: 'bodySm', note: '14px — card copy, meta' },
+  { variant: 'caption', note: '12px — smallest meta' },
+  { variant: 'eyebrow', note: '12px bold uppercase' },
+]
+
+const BUTTON_VARIANTS = [ 'filled', 'soft', 'outlined', 'ghost', 'navy', 'white', 'link' ] as const
+const BUTTON_SIZES = [ 'sm', 'md', 'lg' ] as const
+
+const ICONS = [
+  { name: 'ArrowRightIcon', icon: ArrowRightIcon },
+  { name: 'ArrowRightSmallIcon', icon: ArrowRightSmallIcon },
+  { name: 'ChevronCircleIcon', icon: ChevronCircleIcon },
+  { name: 'FileSecurityIcon', icon: FileSecurityIcon },
+  { name: 'BalanceScaleIcon', icon: BalanceScaleIcon },
+  { name: 'ShieldUserIcon', icon: ShieldUserIcon },
+  { name: 'Agreement02Icon', icon: Agreement02Icon },
+  { name: 'HealthcareIcon', icon: HealthcareIcon },
+  { name: 'Briefcase01Icon', icon: Briefcase01Icon },
+  { name: 'Car01Icon', icon: Car01Icon },
+  { name: 'UmbrellaIcon', icon: UmbrellaIcon },
+  { name: 'PiggyBankIcon', icon: PiggyBankIcon },
+  { name: 'TaskDone01Icon', icon: TaskDone01Icon },
+  { name: 'Navigation03Icon', icon: Navigation03Icon },
+  { name: 'Location05Icon', icon: Location05Icon },
+  { name: 'UserGroup03Icon', icon: UserGroup03Icon },
+  { name: 'HandshakeIcon', icon: HandshakeIcon },
+]
+
+const REVEALS = [
+  { className: 'reveal-up', note: 'Rises 120px into place — the default for section content.' },
+  { className: 'reveal-left', note: 'Slides in from the left — used inside the hero panel.' },
+  { className: 'reveal-fade', note: 'Opacity only — for whole sections and media.' },
+]
+---
+
+<DocsLayout sections={ SECTIONS }>
+  <DocHeader
+    eyebrow="Inszone Web"
+    title="Design System"
+    lead="Every component the public site is built from, rendered live against the real tokens. The palette and easing curve are shared with the Inszone intranet design system, so a change to the brand ramps flows through both."
+  />
+
+  <DocSection
+    id="color"
+    title="Color"
+    description="Two ramps carry the whole site: primary for brand surfaces and accents, neutral for text and chrome. Components reference the token, never a hex."
+  >
+    <Demo label="Primary">
+      <div class="grid grid-cols-3 gap-4 sm:grid-cols-6 lg:grid-cols-11">
+        { SCALE.map(( step ) => (
+          <Swatch token={ `primary-${ step }` } outlined={ step === '50' } />
+        ))}
+      </div>
+    </Demo>
+    <Demo label="Neutral">
+      <div class="grid grid-cols-3 gap-4 sm:grid-cols-6 lg:grid-cols-11">
+        { SCALE.map(( step ) => (
+          <Swatch token={ `neutral-${ step }` } outlined={ step === '50' } />
+        ))}
+      </div>
+    </Demo>
+    <Demo label="Gradients">
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="flex h-24 items-end rounded-lg gradient-inszone p-4">
+          <Typography variant="caption" color="white" class="font-mono">.gradient-inszone</Typography>
+        </div>
+        <div class="flex h-24 items-end rounded-lg gradient-inszone-dark p-4">
+          <Typography variant="caption" color="white" class="font-mono">.gradient-inszone-dark</Typography>
+        </div>
+      </div>
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="typography"
+    title="Typography"
+    description="One component, fifteen variants. Pick the variant that matches the role, then override the tone with the color prop when the surface calls for it."
+  >
+    <Demo>
+      <div class="flex flex-col gap-6">
+        { TYPE_SPECIMENS.map(({ variant, note }) => (
+          <div class="flex flex-col gap-1 border-b border-neutral-100 pb-6 last:border-b-0 last:pb-0">
+            <Typography variant="caption" class="font-mono text-neutral-400">
+              variant="{ variant }" — { note }
+            </Typography>
+            <Typography variant={ variant }>Real relationships. Local agents.</Typography>
+          </div>
+        ))}
+      </div>
+    </Demo>
+    <Demo label="Stat variants" tone="dark">
+      <div class="flex items-baseline gap-4">
+        <Typography variant="statValue" color="white">1,139</Typography>
+        <Typography variant="statLabel" color="white">Team Members</Typography>
+      </div>
+    </Demo>
+    <Demo label="Section heading">
+      <SectionHeading
+        eyebrow="Help & Support"
+        title="Built For Your Business"
+        subtitle="Grow your business faster with tailored insurance solutions."
+      />
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="buttons"
+    title="Buttons"
+    description="One Button component renders an anchor when it gets an href and a button otherwise. Icons animate on hover in the direction they point."
+  >
+    <Demo label="Variants">
+      <div class="flex flex-wrap items-center gap-4">
+        { BUTTON_VARIANTS.map(( variant ) => (
+          <Button variant={ variant } icon={ ArrowRightIcon }>{ variant }</Button>
+        ))}
+      </div>
+    </Demo>
+    <Demo label="Variants on dark" tone="dark">
+      <div class="flex flex-wrap items-center gap-4">
+        <Button variant="white" icon={ ArrowRightIcon }>white</Button>
+        <Button variant="navy" icon={ ArrowRightIcon }>navy</Button>
+      </div>
+    </Demo>
+    <Demo label="Sizes">
+      <div class="flex flex-wrap items-center gap-4">
+        { BUTTON_SIZES.map(( size ) => (
+          <Button size={ size } icon={ ArrowRightIcon }>Size { size }</Button>
+        ))}
+      </div>
+    </Demo>
+    <Demo label="Icon position & disabled">
+      <div class="flex flex-wrap items-center gap-4">
+        <Button icon={ ArrowRightIcon } iconPosition="left">Icon left</Button>
+        <Button icon={ ArrowRightIcon }>Icon right</Button>
+        <Button>No icon</Button>
+        <Button disabled>Disabled</Button>
+      </div>
+    </Demo>
+    <Demo label="Circular carousel control">
+      <div class="flex items-center gap-4">
+        <ArrowButton direction="prev" />
+        <ArrowButton direction="next" />
+        <ArrowButton direction="next" disabled />
+      </div>
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="surfaces"
+    title="Surfaces"
+    description="Card is the shared surface primitive. Tone picks the fill, radius picks the corner scale."
+  >
+    <Demo tone="muted">
+      <div class="grid gap-4 sm:grid-cols-3">
+        <Card class="p-6"><Typography variant="h6">tone="white"</Typography></Card>
+        <Card tone="tint" class="p-6"><Typography variant="h6">tone="tint"</Typography></Card>
+        <Card tone="glass" class="p-6"><Typography variant="h6">tone="glass"</Typography></Card>
+      </div>
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="accordion"
+    title="Accordion"
+    description="Built on native <details>, so it works without JavaScript and gets keyboard and screen-reader behaviour for free. The FAQ stacks these in a bordered list."
+  >
+    <Demo>
+      <div class="flex flex-col overflow-hidden rounded-lg border border-neutral-200">
+        <Accordion title="Open by default" open group="ds" class="border-b border-neutral-200">
+          <p>The content panel picks up a left accent rule and the title turns primary while open.</p>
+        </Accordion>
+        <Accordion title="Closed by default" group="ds" class="border-b border-neutral-200 last:border-b-0">
+          <p>Chevron rotates 180° on open.</p>
+        </Accordion>
+      </div>
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="carousel"
+    title="Carousel"
+    description="A scroll-snap track that works with no JavaScript at all. carousel.ts only layers the arrows, bullets and optional autoplay on top, so a failed hydration still leaves a swipeable row. Set autoplay to advance on a timer — it pauses on hover, on keyboard focus and while the tab is hidden."
+  >
+    <Demo tone="muted">
+      <Carousel id="ds-carousel" pages={ 3 }>
+        { posts.slice( 0, 5 ).map(( post ) => <BlogCard { ...post } />) }
+      </Carousel>
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="marquee"
+    title="Marquee"
+    description="Infinite scroller for logo strips and other continuous rows. Pure CSS — the slot is repeated into the track and the whole thing is translated by exactly one copy, so the seam never shows. Hover to pause; reduced-motion stops it entirely."
+  >
+    <Demo label="Carrier logos" tone="muted">
+      <Marquee speed={ 45 } gap={ 64 }>
+        { carriers.map(({ name, logo }) => (
+          <span class="inline-flex h-10 items-center justify-center">
+            <img src={ logo } alt={ name } class="h-auto max-h-full w-auto max-w-[140px] object-contain" />
+          </span>
+        ))}
+      </Marquee>
+    </Demo>
+    <Demo label="direction=right, no fade, faster">
+      <Marquee speed={ 20 } gap={ 24 } direction="right" fade={ false }>
+        { stats.map(({ value, label }) => (
+          <span class="rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold whitespace-nowrap text-primary-700">
+            { value } { label }
+          </span>
+        ))}
+      </Marquee>
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="ratings"
+    title="Ratings & reviews"
+    description="Stars renders any value out of five; a fraction always shows as a half star, matching how the review platforms display their own averages."
+  >
+    <Demo label="Stars">
+      <div class="flex flex-col gap-3">
+        { [ 5, 4.8, 4.2, 3, 0 ].map(( value ) => (
+          <div class="flex items-center gap-3">
+            <Stars value={ value } />
+            <Typography variant="caption" class="font-mono">value={ value }</Typography>
+          </div>
+        ))}
+      </div>
+    </Demo>
+    <Demo label="Rating card">
+      <div class="grid gap-6 sm:grid-cols-3">
+        { ratings.map(( rating ) => <RatingCard { ...rating } />) }
+      </div>
+    </Demo>
+    <Demo label="Review card">
+      <div class="grid gap-6 sm:grid-cols-2">
+        { reviews.slice( 0, 2 ).map(( review ) => <ReviewCard { ...review } />) }
+      </div>
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="content-cards"
+    title="Content cards"
+    description="The three photo- and icon-led cards used across the home page."
+  >
+    <Demo label="Policy card">
+      <div class="grid gap-8 lg:grid-cols-2">
+        { policies.slice( 0, 2 ).map(( policy ) => <PolicyCard { ...policy } />) }
+      </div>
+    </Demo>
+    <Demo label="Feature card" tone="muted">
+      <div class="flex gap-6">
+        { features.map(( feature ) => <FeatureCard { ...feature } />) }
+      </div>
+    </Demo>
+    <Demo label="Blog card" tone="muted">
+      <div class="flex gap-6 overflow-x-auto">
+        { posts.slice( 0, 2 ).map(( post ) => <BlogCard { ...post } />) }
+      </div>
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="stats"
+    title="Stats"
+    description="StatCard carries a light and a dark tone so the same figures work on the navy band and on a white section."
+  >
+    <Demo label="tone=dark" tone="dark">
+      <div class="flex flex-wrap justify-between gap-8">
+        { stats.map(( stat ) => <StatCard { ...stat } tone="dark" />) }
+      </div>
+    </Demo>
+    <Demo label="tone=light">
+      <div class="flex flex-wrap justify-between gap-8">
+        { stats.map(( stat ) => <StatCard { ...stat } tone="light" />) }
+      </div>
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="icons"
+    title="Icons"
+    description="Every icon is an inline SVG component that fills its box and inherits currentColor, so sizing and tone are set by the wrapper rather than by props."
+  >
+    <Demo>
+      <div class="grid grid-cols-3 gap-6 sm:grid-cols-5 lg:grid-cols-6">
+        { ICONS.map(({ name, icon: Icon }) => (
+          <div class="flex flex-col items-center gap-2 text-center">
+            <span class="inline-flex size-10 text-primary-500"><Icon /></span>
+            <Typography variant="caption" class="font-mono break-all">{ name }</Typography>
+          </div>
+        ))}
+      </div>
+    </Demo>
+    <Demo label="Social & brand" tone="dark">
+      <div class="flex flex-wrap items-center gap-6">
+        { ( [ 'facebook', 'x', 'instagram', 'linkedin' ] as const ).map(( network ) => (
+          <span class="inline-flex size-10 items-center justify-center rounded-full bg-primary-500 text-white">
+            <span class="inline-flex size-[18px]"><SocialIcon network={ network } /></span>
+          </span>
+        ))}
+        <TrustedChoiceBadge />
+      </div>
+    </Demo>
+  </DocSection>
+
+  <DocSection
+    id="motion"
+    title="Motion"
+    description="Scroll reveals are CSS classes observed by scripts/reveal.ts. Add the class to any element; the observer stages them so a row of cards arrives one after another instead of all at once. prefers-reduced-motion skips the animation entirely."
+  >
+    <Demo>
+      <div class="flex flex-col gap-4">
+        { REVEALS.map(({ className, note }) => (
+          <div class="flex flex-col gap-1 rounded-lg bg-neutral-50 p-4">
+            <Typography variant="caption" class="font-mono text-neutral-700">.{ className }</Typography>
+            <Typography variant="bodySm">{ note }</Typography>
+          </div>
+        ))}
+      </div>
+    </Demo>
+  </DocSection>
+
+  <script>
+    import { initCarousels } from '@/scripts/carousel'
+    import { initReveal } from '@/scripts/reveal'
+    import { initCounters } from '@/scripts/counter'
+    import { initAccordions } from '@/scripts/accordion'
+
+    initCarousels()
+    // Demos that use reveal classes (SectionHeading) would sit at opacity 0
+    // without this — the docs page has no marketing Layout to start it.
+    initReveal()
+    void initCounters()
+    initAccordions()
+  </script>
+</DocsLayout>

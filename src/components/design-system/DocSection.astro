@@ -1,0 +1,19 @@
+---
+/** One documented topic: h2 + optional description, above a rule. */
+import Typography from '@/components/ui/Typography.astro'
+
+interface Props {
+  id: string
+  title: string
+  description?: string
+  class?: string
+}
+
+const { id, title, description, class: className } = Astro.props
+---
+
+<section id={ id } class:list={ [ 'mb-16 scroll-mt-24 border-t border-neutral-200 pt-10', className ] }>
+  <Typography variant="h4" as="h2" class="mb-3">{ title }</Typography>
+  { description && <Typography variant="body" class="mb-6 max-w-[70ch]">{ description }</Typography> }
+  <slot />
+</section>

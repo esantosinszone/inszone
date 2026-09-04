@@ -1,12 +1,26 @@
 ---
 import Layout from '@/layouts/Layout.astro'
 import Hero from '@/sections/home/Hero.astro'
+import CarrierStrip from '@/sections/home/CarrierStrip.astro'
+import ProcessSteps from '@/sections/home/ProcessSteps.astro'
+import Testimonials from '@/sections/home/Testimonials.astro'
+import FeatureTrio from '@/sections/home/FeatureTrio.astro'
+import PolicyGrid from '@/sections/home/PolicyGrid.astro'
+import StatsBand from '@/sections/home/StatsBand.astro'
+import SplitCta from '@/sections/home/SplitCta.astro'
+import Faq from '@/sections/home/Faq.astro'
+import BlogCarousel from '@/sections/home/BlogCarousel.astro'
 ---
 
 <Layout title='Inszone Insurance: Business | Personal | Benefits'>
   <Hero/>
-  <div class="h-dvh bg-amber-400"></div>
-  <div class="h-dvh bg-red-400"></div>
-  <div class="h-dvh bg-violet-400"></div>
-  <div class="h-dvh bg-blue-400"></div>
+  <CarrierStrip/>
+  <ProcessSteps/>
+  <Testimonials/>
+  <FeatureTrio/>
+  <PolicyGrid/>
+  <StatsBand/>
+  <SplitCta/>
+  <Faq/>
+  <BlogCarousel/>
 </Layout>

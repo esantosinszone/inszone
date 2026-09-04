@@ -1,0 +1,54 @@
+---
+/**
+ * Disclosure panel built on native `<details>`, so keyboard and screen-reader
+ * behaviour come for free and it still works with JavaScript off.
+ *
+ * `accordion.ts` enhances it with an open/close height animation and, when
+ * `group` is set, makes the panels in that group mutually exclusive — opening
+ * one collapses whichever was open. Both are progressive: without the script
+ * the panel still toggles, it just snaps.
+ */
+import ChevronCircleIcon from '@/components/icons/ChevronCircleIcon.astro'
+import Typography from '@/components/ui/Typography.astro'
+
+interface Props {
+  title: string
+  open?: boolean
+  /** Panels sharing a group name can only have one open at a time. */
+  group?: string
+  class?: string
+}
+
+const { title, open = false, group, class: className } = Astro.props
+---
+
+<details
+  class:list={ [ 'group @container', className ] }
+  open={ open }
+  data-accordion
+  data-accordion-group={ group }
+>
+  <summary
+    class="flex cursor-pointer list-none items-center justify-between gap-4 p-4 select-none @[700px]:py-6 @[700px]:pr-6 @[700px]:pl-10 [&::-webkit-details-marker]:hidden"
+  >
+    <Typography
+      variant="inherit"
+      as="span"
+      class="text-sm leading-tight font-semibold text-neutral-600 transition-colors group-open:text-primary-500 @[700px]:text-xl @[700px]:leading-[1.4]"
+    >
+      { title }
+    </Typography>
+    <span
+      class="inline-flex size-10 shrink-0 text-primary-500 transition-transform duration-200 group-open:rotate-180"
+      aria-hidden="true"
+    >
+      <ChevronCircleIcon />
+    </span>
+  </summary>
+  <div
+    data-accordion-content
+    class="border-t border-neutral-200 bg-neutral-100 px-4 pt-3 pb-4 text-base leading-relaxed text-neutral-600 group-open:border-l-[3px] group-open:border-l-primary-500 @[700px]:p-10 [&_a]:text-primary-500 [&_a]:underline [&_p]:mb-2 [&_p:last-child]:mb-0"
+  >
+    <slot />
+  </div>
+</details>

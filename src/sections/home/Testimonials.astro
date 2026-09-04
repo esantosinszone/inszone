@@ -1,0 +1,42 @@
+---
+/** Platform scores plus four customer reviews in a single bordered strip. */
+import { ratings, reviews } from '@/data/home'
+import Container from '@/components/ui/Container.astro'
+import RatingCard from '@/components/ui/RatingCard.astro'
+import ReviewCard from '@/components/ui/ReviewCard.astro'
+import Typography from '@/components/ui/Typography.astro'
+---
+
+<section class="bg-white">
+  <Container class="flex flex-col items-stretch gap-4 pt-8 pb-14 md:items-center md:gap-8 md:py-20">
+    <div class="flex flex-col items-start gap-2 text-left md:items-center md:text-center">
+      <Typography variant="h2" class="reveal-up">What Our Clients Say About Us</Typography>
+    </div>
+
+    <div class="flex w-full gap-2 md:max-w-[1020px] md:gap-6">
+      { ratings.map(({ platform, score, toneClass }) => (
+        <RatingCard
+          platform={ platform }
+          score={ score }
+          toneClass={ toneClass }
+          class="reveal-up min-w-0 flex-1"
+        />
+      ))}
+    </div>
+
+    <div
+      class="grid w-full grid-cols-2 overflow-hidden rounded-lg border border-neutral-300 md:flex md:items-stretch md:rounded-2xl"
+    >
+      { reviews.map(( review, index ) => (
+        <ReviewCard
+          { ...review }
+          class:list={ [
+            'reveal-up min-w-0 md:flex-1',
+            index >= 2 && 'max-md:hidden',
+            index > 0 && 'md:border-l md:border-neutral-300',
+          ] }
+        />
+      ))}
+    </div>
+  </Container>
+</section>

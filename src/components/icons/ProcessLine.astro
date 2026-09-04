@@ -1,0 +1,153 @@
+---
+/**
+ * The connector that threads through the four step bubbles in "We protect your
+ * future" — one continuous path, so it can be drawn as a single stroke.
+ *
+ * The geometry is DERIVED from the same numbers that lay out the step columns
+ * (column gap, bubble size, vertical rise) rather than hand-placed, so the line
+ * can't drift out of alignment with the bubbles when the layout changes. Every
+ * coordinate is in container-query units: the SVG is sized `100cqw` wide by
+ * `height` cqw tall against a matching viewBox, so one user unit is one cqw and
+ * the maths below reads directly as layout units.
+ *
+ * The curve profile (the long flat, the steep middle, the slight overshoot
+ * before it settles) is lifted from the original exported artwork as fractions
+ * of each segment, so it keeps the designed easing at any width.
+ *
+ * The path's length is measured here at build time and published as
+ * `--draw-length`, which `.reveal-draw` uses for the dash animation. The
+ * obvious alternative — `pathLength="1"` — silently breaks when combined with
+ * `vector-effect="non-scaling-stroke"`: the dash gets scaled by the user-space
+ * length but applied in screen space, and the line renders as repeating dashes
+ * instead of one stroke. Measuring is exact and has no such interaction.
+ */
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'svg'> {
+  /** Number of bubbles the line threads through. */
+  steps?: number
+  /** Column gap in cqw — must match the step list's gap. */
+  gap?: number
+  /** Bubble diameter in cqw — must match the icon wrapper's size. */
+  bubble?: number
+  /** How far each bubble sits above the previous one, in cqw. */
+  rise?: number
+  /** Stroke thickness in cqw, so the line scales with the diagram. */
+  weight?: number
+}
+
+const {
+  steps = 4,
+  gap = 7.58,
+  bubble = 6.06,
+  rise = 6.06,
+  weight = 0.28,
+  class: className,
+  ...rest
+} = Astro.props
+
+type Point = [ number, number ]
+
+const column = ( 100 - gap * ( steps - 1 )) / steps
+const advance = column + gap
+
+/** Columns are right-aligned, so each bubble hugs its column's right edge. */
+const centerX = ( index: number ): number => index * advance + column - bubble / 2
+/** Step 1 sits lowest; each following step climbs by one `rise`. */
+const centerY = ( index: number ): number => ( steps - 1 - index ) * rise + bubble / 2
+
+/**
+ * Control points of one segment, as fractions of its horizontal span and its
+ * vertical drop. `fy` passes 1 on the fourth point — that overshoot is what
+ * gives the curve its flick before it flattens into the next bubble.
+ */
+const SEGMENT: Point[] = [
+  [ 0.254237, 0 ],
+  [ 0.237288, 0.548780 ],
+  [ 0.432203, 0.914633 ],
+  [ 0.627119, 1.280487 ],
+  [ 0.700565, 1 ],
+  [ 1, 1 ],
+]
+
+/** Flat lead-in from the left edge, one curve per gap, then a tail to the right. */
+const start: Point = [ 0, centerY( 0 ) ]
+const leadIn: Point = [ centerX( 0 ), centerY( 0 ) ]
+const curves: Point[][] = Array.from({ length: steps - 1 }, ( _, index ) => {
+  const x0 = centerX( index )
+  const y0 = centerY( index )
+  const dx = centerX( index + 1 ) - x0
+  const dy = centerY( index + 1 ) - y0
+  return SEGMENT.map(( [ fx, fy ] ): Point => [ x0 + fx * dx, y0 + fy * dy ])
+})
+const tail: Point = [ 100, centerY( steps - 1 ) ]
+
+const distance = ( a: Point, b: Point ): number => Math.hypot( b[ 0 ] - a[ 0 ], b[ 1 ] - a[ 1 ])
+
+const cubicAt = ( p0: Point, p1: Point, p2: Point, p3: Point, t: number ): Point => {
+  const u = 1 - t
+  const [ a, b, c, d ] = [ u * u * u, 3 * u * u * t, 3 * u * t * t, t * t * t ]
+  return [
+    a * p0[ 0 ] + b * p1[ 0 ] + c * p2[ 0 ] + d * p3[ 0 ],
+    a * p0[ 1 ] + b * p1[ 1 ] + c * p2[ 1 ] + d * p3[ 1 ],
+  ]
+}
+
+/** Polyline approximation — 64 samples is well inside a tenth of a unit here. */
+const cubicLength = ( p0: Point, p1: Point, p2: Point, p3: Point ): number => {
+  const SAMPLES = 64
+  let length = 0
+  let previous = p0
+  for ( let step = 1; step <= SAMPLES; step += 1 ) {
+    const point = cubicAt( p0, p1, p2, p3, step / SAMPLES )
+    length += distance( previous, point )
+    previous = point
+  }
+  return length
+}
+
+const round = ( value: number ): number => Math.round( value * 1000 ) / 1000
+
+let cursor: Point = leadIn
+let length = distance( start, leadIn )
+let commands = ''
+
+for ( const points of curves ) {
+  const [ c1, c2, mid, c3, c4, end ] = points
+  length += cubicLength( cursor, c1, c2, mid ) + cubicLength( mid, c3, c4, end )
+  commands +=
+    `C${ round( c1[ 0 ] ) } ${ round( c1[ 1 ] ) } ${ round( c2[ 0 ] ) } ${ round( c2[ 1 ] ) } ${ round( mid[ 0 ] ) } ${ round( mid[ 1 ] ) }` +
+    `C${ round( c3[ 0 ] ) } ${ round( c3[ 1 ] ) } ${ round( c4[ 0 ] ) } ${ round( c4[ 1 ] ) } ${ round( end[ 0 ] ) } ${ round( end[ 1 ] ) }`
+  cursor = end
+}
+
+length += distance( cursor, tail )
+
+const path =
+  `M${ round( start[ 0 ] ) } ${ round( start[ 1 ] ) }` +
+  `L${ round( leadIn[ 0 ] ) } ${ round( leadIn[ 1 ] ) }` +
+  commands +
+  `L${ round( tail[ 0 ] ) } ${ round( tail[ 1 ] ) }`
+
+const height = round(( steps - 1 ) * rise + bubble + 1 )
+---
+
+<svg
+  viewBox={ `0 0 100 ${ height }` }
+  preserveAspectRatio="none"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false"
+  style={ `height:${ height }cqw;--draw-length:${ round( length ) }` }
+  class:list={ [ 'pointer-events-none w-full', className ] }
+  { ...rest }
+>
+  <path
+    d={ path }
+    stroke="currentColor"
+    stroke-width={ weight }
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

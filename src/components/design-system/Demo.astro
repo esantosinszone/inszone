@@ -1,0 +1,31 @@
+---
+/**
+ * Framed box that hosts a live example. `label` names the variant being
+ * shown; `tone` switches the backdrop for components that only read correctly
+ * on a dark or tinted surface.
+ */
+import Typography from '@/components/ui/Typography.astro'
+
+interface Props {
+  label?: string
+  tone?: 'default' | 'muted' | 'dark'
+  class?: string
+}
+
+const { label, tone = 'default', class: className } = Astro.props
+
+const TONE = {
+  default: 'bg-white border-neutral-200',
+  muted: 'bg-neutral-50 border-neutral-200',
+  dark: 'gradient-inszone-dark border-transparent',
+}
+---
+
+<div class="mb-6">
+  { label && (
+    <Typography variant="eyebrow" as="h3" class="mb-2 text-neutral-400">{ label }</Typography>
+  )}
+  <div class:list={ [ 'rounded-xl border p-6', TONE[ tone ], className ] }>
+    <slot />
+  </div>
+</div>

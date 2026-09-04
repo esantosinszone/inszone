@@ -1,0 +1,29 @@
+---
+/** Neutral surface used by the feature and policy cards. */
+import type { HTMLAttributes } from 'astro/types'
+import type { HTMLTag } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: HTMLTag
+  tone?: 'white' | 'tint' | 'glass'
+  radius?: 'md' | 'lg' | 'xl'
+}
+
+const { as: Tag = 'div', tone = 'white', radius = 'lg', class: className, ...rest } = Astro.props
+
+const TONE = {
+  white: 'bg-white',
+  tint: 'bg-primary-100',
+  glass: 'bg-white/60 backdrop-blur-md',
+}
+
+const RADIUS = {
+  md: 'rounded-lg',
+  lg: 'rounded-2xl md:rounded-3xl',
+  xl: 'rounded-3xl',
+}
+---
+
+<Tag class:list={ [ 'relative', TONE[ tone ], RADIUS[ radius ], className ] } { ...rest }>
+  <slot />
+</Tag>

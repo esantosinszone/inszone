@@ -1,0 +1,56 @@
+---
+/**
+ * Dark gradient band with the four company figures and an outlined
+ * "PRESENCE" watermark. The watermark is sized in container-query units so it
+ * always spans the band no matter how wide it gets.
+ */
+import { stats } from '@/data/home'
+import StatCard from '@/components/ui/StatCard.astro'
+
+const WATERMARK = 'PRESENCE'
+const SEPARATOR = 'pointer-events-none hidden h-px flex-1 bg-white/36 xl:mt-38 xl:block'
+---
+
+<section class="mx-auto max-w-[calc(1480px+3rem)] md:px-6">
+  <div
+    class="@container relative flex flex-col-reverse gap-6 overflow-hidden rounded-t-3xl gradient-inszone-dark px-4 pt-8 pb-20 md:flex-col md:gap-0 md:rounded-3xl md:px-6 md:pt-10 md:pb-30 xl:px-32 xl:pt-20 xl:pb-55"
+  >
+    <div
+      class="relative z-1 flex flex-wrap items-start justify-evenly gap-y-11 xl:flex-nowrap xl:justify-between xl:gap-y-0"
+    >
+      <span aria-hidden="true" class:list={ [ SEPARATOR, 'xl:-ml-32' ] }></span>
+      { stats.map(( stat, index ) => (
+        <Fragment>
+          <StatCard { ...stat } tone="dark" class="shrink-0 xl:px-6" />
+          <span
+            aria-hidden="true"
+            class:list={ [ SEPARATOR, index === stats.length - 1 && 'xl:-mr-32' ] }
+          >
+          </span>
+        </Fragment>
+      ))}
+    </div>
+
+    <p
+      aria-hidden="true"
+      class="pointer-events-none m-0 text-center text-[32px] leading-[0.7] font-extrabold tracking-[0.01em] text-white select-none md:hidden"
+    >
+      { WATERMARK }
+    </p>
+    <!-- `font-display` rather than Inter: see the token's note in global.css —
+         `-webkit-text-stroke` traces every contour of a glyph, and Inter's P, R
+         and N are built from overlapping components, so the outline gets seams
+         drawn through the letters.
+
+         Sized from the word's own character count so it fills the band whatever
+         it says, with a ceiling for short words. The small negative `bottom`
+         lets the baseline sink past the band edge so the letters crop. -->
+    <p
+      aria-hidden="true"
+      style={ `font-size:min(148cqw / ${ WATERMARK.length }, 24cqw)` }
+      class="font-display pointer-events-none absolute bottom-[-0.03em] left-1/2 m-0 hidden -translate-x-1/2 leading-[0.7] font-black tracking-normal whitespace-nowrap text-transparent opacity-[0.36] select-none [-webkit-text-stroke:1.5px_#fff] md:block"
+    >
+      { WATERMARK }
+    </p>
+  </div>
+</section>

@@ -1,0 +1,39 @@
+---
+/** Tinted panel with the carrier logos scrolling on an infinite marquee. */
+import { carriers } from '@/data/home'
+import Marquee from '@/components/ui/Marquee.astro'
+import Typography from '@/components/ui/Typography.astro'
+---
+
+<section class="-mt-52 relative reveal-fade">
+  <div
+    class="mx-auto flex max-w-[1480px] flex-col items-center gap-6 rounded-3xl bg-primary-50 px-4 py-10 md:gap-10 md:px-6 md:pt-44 md:pb-20"
+  >
+    <div class="flex max-w-[1020px] flex-col gap-3 text-center">
+      <Typography variant="h2">The Best Insurance Companies For You</Typography>
+      <Typography variant="body">
+        We carefully handpick trusted insurance providers, focusing on more than just coverage and
+        price. Each company is evaluated for its reliability, financial stability, and commitment to
+        customer service, so you can feel confident in your choice.
+      </Typography>
+    </div>
+    <!-- Bleeds past the panel padding so the edge fade lands on the panel's
+         own corners instead of floating inside it. -->
+    <Marquee
+      speed={ 45 }
+      gap={ 64 }
+      class="-mx-4 w-[calc(100%+2rem)] md:-mx-6 md:w-[calc(100%+3rem)]"
+    >
+      { carriers.map(({ name, logo }) => (
+        <span class="inline-flex h-8 items-center justify-center md:h-10">
+          <img
+            src={ logo }
+            alt={ name }
+            loading="lazy"
+            class="h-auto max-h-full w-auto max-w-[140px] object-contain"
+          />
+        </span>
+      ))}
+    </Marquee>
+  </div>
+</section>

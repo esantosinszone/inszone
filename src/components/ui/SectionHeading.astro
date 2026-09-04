@@ -1,0 +1,35 @@
+---
+/** Eyebrow + title + subtitle block shared by most sections. */
+import Typography from '@/components/ui/Typography.astro'
+
+interface Props {
+  eyebrow?: string
+  title: string
+  subtitle?: string
+  align?: 'left' | 'center'
+  /** `narrow` caps the subtitle measure; `wide` lets it run the full column. */
+  measure?: 'narrow' | 'wide'
+  class?: string
+}
+
+const { eyebrow, title, subtitle, align = 'left', measure = 'wide', class: className } = Astro.props
+---
+
+<div
+  class:list={ [
+    'flex flex-col gap-3',
+    align === 'center' && 'items-center text-center',
+    className,
+  ] }
+>
+  { eyebrow && <Typography variant="eyebrow" class="reveal-left">{ eyebrow }</Typography> }
+  <Typography variant="h2" class="reveal-left">{ title }</Typography>
+  { subtitle && (
+    <Typography
+      variant="body"
+      class:list={ [ 'reveal-left', measure === 'narrow' && 'max-w-[60ch]' ] }
+    >
+      { subtitle }
+    </Typography>
+  )}
+</div>

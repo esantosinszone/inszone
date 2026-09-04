@@ -1,0 +1,21 @@
+---
+/** Page hero for the design system: eyebrow + title + lead. */
+import Typography from '@/components/ui/Typography.astro'
+
+interface Props {
+  eyebrow?: string
+  title: string
+  lead?: string
+  class?: string
+}
+
+const { eyebrow, title, lead, class: className } = Astro.props
+---
+
+<header class:list={ [ 'mb-12', className ] }>
+  { eyebrow && (
+    <Typography variant="eyebrow" as="div" class="mb-3 text-primary-700">{ eyebrow }</Typography>
+  )}
+  <Typography variant="h1" as="h1">{ title }</Typography>
+  { lead && <Typography variant="lead" class="mt-4 max-w-[70ch]">{ lead }</Typography> }
+</header>

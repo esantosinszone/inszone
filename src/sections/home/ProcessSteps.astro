@@ -1,0 +1,133 @@
+---
+/**
+ * "We protect your future." — the four-step diagram.
+ *
+ * On desktop the whole thing is laid out in container-query units so the
+ * curve, the watermark numerals and the icon bubbles keep their exact
+ * proportions at any width. The query container is the page gutter itself, so
+ * the diagram lines up edge to edge with the header and the hero.
+ *
+ * The step list stays in normal flow and the intro is what gets absolutely
+ * positioned over it — the other way round the wrapper would collapse to
+ * whatever min-height we guessed and the tallest step would spill out the
+ * bottom of the section.
+ *
+ * Below 900px the diagram collapses into a plain vertical list with a rule
+ * running down the icon column.
+ */
+import { processSteps } from '@/data/home'
+import ArrowRightIcon from '@/components/icons/ArrowRightIcon.astro'
+import ProcessLine from '@/components/icons/ProcessLine.astro'
+import Button from '@/components/ui/Button.astro'
+import Container from '@/components/ui/Container.astro'
+import Typography from '@/components/ui/Typography.astro'
+
+/**
+ * Desktop geometry, shared with `ProcessLine` so the curve always threads
+ * through the bubbles. Change these and the line follows.
+ */
+const GAP = 7.58
+const BUBBLE = 6.06
+const RISE = 6.06
+
+/**
+ * Per-step offsets. Written out in full (rather than composed at runtime)
+ * because Tailwind only sees class names that appear literally in the source.
+ */
+const STEPS = [
+  {
+    offset: 'z-8 @[900px]:pt-[18.18cqw]',
+    numeral: '@[900px]:top-[26.82cqw] @[900px]:left-[-1.52cqw]',
+    /** Step 1's numeral hangs off the item itself, not the text block. */
+    numeralOnItem: true,
+  },
+  { offset: 'z-7 @[900px]:pt-[12.12cqw]', numeral: '@[900px]:top-[1.52cqw] @[900px]:left-[-1.52cqw]', numeralOnItem: false },
+  { offset: 'z-6 @[900px]:pt-[6.06cqw]', numeral: '@[900px]:top-[1.3cqw] @[900px]:left-[-1.44cqw]', numeralOnItem: false },
+  { offset: 'z-5 @[900px]:pt-0', numeral: '@[900px]:top-[1.52cqw] @[900px]:left-[-1.52cqw]', numeralOnItem: false },
+]
+
+const NUMERAL_BASE =
+  'pointer-events-none absolute z-0 block text-[120px] leading-[0.8] font-black whitespace-nowrap text-[#D2DFF3] select-none top-[-10px] right-0 @[900px]:right-auto @[900px]:text-[15.15cqw] @[900px]:text-primary-100 @[900px]:mix-blend-multiply'
+---
+
+<section
+  class="overflow-hidden bg-linear-to-b from-white to-primary-100 py-12 md:py-30 pb-12 md:from-[54.67%] md:to-primary-50"
+>
+  <Container class="@container">
+    <div class="relative">
+      <div
+        class="relative z-9 mb-6 flex flex-col gap-1 @[900px]:absolute @[900px]:top-0 @[900px]:left-0 @[900px]:mb-0 @[900px]:w-[42.42cqw]"
+      >
+        <Typography variant="h2" class="reveal-left text-[32px] leading-[0.8] @[900px]:text-[40px]">
+          We protect your future.
+        </Typography>
+        <div class="flex flex-col items-start gap-4 pt-1 @[900px]:gap-[1.82cqw] @[900px]:pt-[1.21cqw]">
+          <Typography
+            variant="inherit"
+            as="p"
+            class="reveal-left text-sm leading-[1.3] font-medium text-neutral-500 @[900px]:text-base @[900px]:text-neutral-600"
+          >
+            Smarter insurance means more protection, more savings, and peace of mind for what
+            matters most.
+          </Typography>
+          <Button href="/quote" size="lg" icon={ ArrowRightIcon } class="reveal-left">Get Started</Button>
+        </div>
+      </div>
+
+      <!-- The bottom padding reserves room for step 1's numeral, which hangs
+           below the end of the column it belongs to. -->
+      <div
+        class="relative flex flex-col gap-12 before:absolute before:top-10 before:left-[39px] before:h-[calc(100%-107px)] before:w-[3.5px] before:bg-primary-200 before:content-[''] @[900px]:flex-row @[900px]:items-start @[900px]:gap-[7.58cqw] @[900px]:pb-[5cqw] @[900px]:before:hidden"
+      >
+        <ProcessLine
+          steps={ processSteps.length }
+          gap={ GAP }
+          bubble={ BUBBLE }
+          rise={ RISE }
+          class="reveal-draw absolute top-0 left-0 z-1 hidden text-primary-200 @[900px]:block"
+        />
+
+        { processSteps.map(({ title, description, icon: Icon }, index) => (
+          <div
+            class:list={ [
+              'reveal-up relative flex min-w-0 flex-1 flex-row items-start gap-4 @[900px]:flex-col @[900px]:items-end @[900px]:gap-[0.91cqw]',
+              STEPS[ index ].offset,
+            ] }
+          >
+            { STEPS[ index ].numeralOnItem && (
+              <span aria-hidden="true" class:list={ [ NUMERAL_BASE, STEPS[ index ].numeral ] }>
+                { index + 1 }
+              </span>
+            )}
+            <span
+              class="relative z-2 inline-flex size-20 shrink-0 items-center justify-center rounded-full bg-white text-primary-500 drop-shadow-[0_16px_32px_rgba(2,6,24,0.12)] @[900px]:size-[6.06cqw]"
+            >
+              <span class="inline-flex size-12 @[900px]:size-[3.64cqw]">
+                <Icon />
+              </span>
+            </span>
+            <div
+              class="static z-2 flex w-full flex-col gap-4 pt-2 text-left @[900px]:relative @[900px]:gap-[1.21cqw] @[900px]:pt-[0.61cqw] @[900px]:text-right"
+            >
+              { !STEPS[ index ].numeralOnItem && (
+                <span aria-hidden="true" class:list={ [ NUMERAL_BASE, STEPS[ index ].numeral ] }>
+                  { index + 1 }
+                </span>
+              )}
+              <Typography
+                variant="inherit"
+                as="h3"
+                class="relative z-2 text-lg leading-[1.1] font-bold text-primary-500 @[900px]:text-xl"
+              >
+                { title }
+              </Typography>
+              <Typography variant="inherit" as="p" class="relative z-2 text-sm leading-[1.4] text-neutral-600">
+                { description }
+              </Typography>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Container>
+</section>

@@ -1,0 +1,26 @@
+---
+/**
+ * The page gutter. Every section that should line up with the header logo and
+ * the hero wraps its content in this — 1320px of content, edge to edge, with
+ * an 8-unit gutter until the viewport is wide enough not to need one.
+ */
+import type { HTMLAttributes } from 'astro/types'
+import type { HTMLTag } from 'astro/types'
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: HTMLTag
+  /** Drop to a narrower measure for text-led sections (FAQ, headings). */
+  width?: 'full' | 'narrow'
+}
+
+const { as: Tag = 'div', width = 'full', class: className, ...rest } = Astro.props
+
+const WIDTH = {
+  full: 'max-w-8xl',
+  narrow: 'max-w-[1020px]',
+}
+---
+
+<Tag class:list={ [ 'mx-auto w-full px-8 2xl:px-0', WIDTH[ width ], className ] } { ...rest }>
+  <slot />
+</Tag>

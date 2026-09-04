@@ -1,0 +1,29 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+type Props = HTMLAttributes<'svg'>
+
+const { class: className, ...rest } = Astro.props
+---
+
+<svg
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false"
+  class:list={ ['size-full', className] }
+  { ...rest }
+>
+  <g>
+  <path d="M5 24L9 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M43 25L39 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16 35L16.4913 33.7716C17.222 31.945 17.5874 31.0316 18.3492 30.5158C19.1111 30 20.0948 30 22.0622 30H25.9378C27.9052 30 28.889 30 29.6508 30.5158C30.4126 31.0316 30.778 31.945 31.5086 33.7716L32 35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M4 34V39.764C4 40.5214 4.4815 41.214 5.24376 41.5528C5.73836 41.7726 6.21076 42 6.78116 42H10.2188C10.7892 42 11.2616 41.7726 11.7562 41.5528C12.5185 41.214 13 40.5214 13 39.764V36" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M35 36V39.764C35 40.5214 35.4816 41.214 36.2438 41.5528C36.7384 41.7726 37.2108 42 37.7812 42H41.2188C41.7892 42 42.2616 41.7726 42.7562 41.5528C43.5184 41.214 44 40.5214 44 39.764V34" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M40 17L42 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M8 17L6 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M9 18L11.1766 11.4702C12.0566 8.8301 12.4966 7.51006 13.5442 6.75504C14.5917 6 15.9832 6 18.7661 6H29.234C32.0168 6 33.4082 6 34.4558 6.75504C35.5034 7.51006 35.9434 8.8301 36.8234 11.4702L39 18" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M9 18H39C40.9144 20.027 44 22.8498 44 25.9992V32.9404C44 34.0814 43.241 35.0416 42.2336 35.175L36 36H12L5.76632 35.175C4.7591 35.0416 4 34.0814 4 32.9404V25.9992C4 22.8498 7.08558 20.027 9 18Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+  </g>
+</svg>

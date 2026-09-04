@@ -1,0 +1,25 @@
+---
+/** Circular carousel control. */
+import type { HTMLAttributes } from 'astro/types'
+import ArrowRightSmallIcon from '@/components/icons/ArrowRightSmallIcon.astro'
+
+interface Props extends HTMLAttributes<'button'> {
+  direction: 'prev' | 'next'
+}
+
+const { direction, class: className, ...rest } = Astro.props
+---
+
+<button
+  type="button"
+  aria-label={ direction === 'prev' ? 'Previous' : 'Next' }
+  class:list={ [
+    'inline-flex size-12 cursor-pointer items-center justify-center rounded-full border border-neutral-200 bg-white text-primary-950 transition duration-150 hover:border-primary-300 hover:bg-primary-100 active:scale-[0.96] disabled:pointer-events-none disabled:opacity-40',
+    className,
+  ] }
+  { ...rest }
+>
+  <span class:list={ [ 'inline-flex size-5', direction === 'prev' && '-scale-x-100' ] }>
+    <ArrowRightSmallIcon />
+  </span>
+</button>

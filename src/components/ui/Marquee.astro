@@ -1,0 +1,98 @@
+---
+/**
+ * Infinite horizontal marquee.
+ *
+ * The slot is rendered `repeat` times into a single track, which is then
+ * translated by exactly one copy's width and looped — so the seam never shows.
+ * It is pure CSS: no JavaScript, nothing to hydrate, and the animation runs on
+ * the compositor.
+ *
+ * `repeat` matters: for the loop to stay gapless the track has to be at least
+ * one copy wider than its container, i.e. `(repeat - 1) x copyWidth >=
+ * containerWidth`. The default of 3 covers any content that fills at least half
+ * the container; bump it for short content, drop it to 2 for content that is
+ * already wider than the viewport.
+ */
+interface Props {
+  /** Seconds for one full cycle. Higher is slower. */
+  speed?: number
+  /** Space between items, in pixels — also used as the seam gap. */
+  gap?: number
+  /** How many times the slot is repeated into the track. See note above. */
+  repeat?: number
+  direction?: 'left' | 'right'
+  pauseOnHover?: boolean
+  /** Fade the left and right edges so items enter and leave softly. */
+  fade?: boolean
+  class?: string
+}
+
+const {
+  speed = 40,
+  gap = 40,
+  repeat = 3,
+  direction = 'left',
+  pauseOnHover = true,
+  fade = true,
+  class: className,
+} = Astro.props
+
+const content = await Astro.slots.render( 'default' )
+const copies = Array.from({ length: Math.max( 2, repeat ) })
+---
+
+<div
+  class:list={ [
+    'marquee group relative w-full overflow-hidden',
+    fade && 'marquee--fade',
+    pauseOnHover && 'marquee--pausable',
+    className,
+  ] }
+  style={ `--marquee-duration:${ speed }s;--marquee-gap:${ gap }px;--marquee-shift:${ direction === 'left' ? '-' : '' }${ 100 / copies.length }%` }
+>
+  <div class="marquee__track flex w-max">
+    { copies.map(( _, index ) => (
+      <div
+        class="marquee__group flex shrink-0 items-center"
+        aria-hidden={ index > 0 ? 'true' : undefined }
+        set:html={ content }
+      />
+    ))}
+  </div>
+</div>
+
+<style>
+  @keyframes marquee-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(var(--marquee-shift), 0, 0); }
+  }
+
+  .marquee__group {
+    gap: var(--marquee-gap);
+    /* Trailing space so the join between two copies matches the spacing
+       inside a copy. Each copy stays identical, which is what keeps the
+       translate distance exact. */
+    padding-inline-end: var(--marquee-gap);
+  }
+
+  .marquee__track {
+    animation: marquee-scroll var(--marquee-duration) linear infinite;
+    will-change: transform;
+  }
+
+  .marquee--fade {
+    --marquee-mask: linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%);
+    -webkit-mask-image: var(--marquee-mask);
+    mask-image: var(--marquee-mask);
+  }
+
+  .marquee--pausable:hover .marquee__track {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+    }
+  }
+</style>

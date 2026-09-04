@@ -1,0 +1,86 @@
+---
+/**
+ * The one button on the site. Renders an `<a>` when `href` is given and a
+ * `<button>` otherwise, so calls to action and form controls share the exact
+ * same surface treatment.
+ */
+import type { HTMLAttributes } from 'astro/types'
+import type { AstroComponent } from '@/types'
+
+export type ButtonVariant = 'filled' | 'soft' | 'outlined' | 'ghost' | 'navy' | 'white' | 'link'
+export type ButtonSize = 'sm' | 'md' | 'lg'
+
+interface Props extends Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'size'> {
+  variant?: ButtonVariant
+  size?: ButtonSize
+  href?: string
+  /** Icon component rendered beside the label. */
+  icon?: AstroComponent
+  iconPosition?: 'left' | 'right'
+}
+
+const {
+  variant = 'filled',
+  size = 'md',
+  href,
+  icon: Icon,
+  iconPosition = 'right',
+  class: className,
+  ...rest
+} = Astro.props
+
+const Tag = href ? 'a' : 'button'
+
+const SIZE: Record<ButtonSize, string> = {
+  sm: 'gap-2 rounded-sm px-3 py-2 text-sm',
+  md: 'gap-2 rounded-lg px-6 py-3 text-base',
+  lg: 'gap-2 rounded-lg px-4 py-2 text-xs sm:gap-4 sm:px-6 sm:py-3 sm:text-base lg:gap-8 lg:px-8 lg:py-4 lg:text-lg',
+}
+
+/** `lg` buttons tuck in on the icon side so the arrow doesn't float. */
+const SIZE_ICON_PADDING: Record<ButtonSize, Record<'left' | 'right', string>> = {
+  sm: { left: 'pl-2', right: '' },
+  md: { left: '', right: '' },
+  lg: { left: 'sm:pl-5 lg:pl-6', right: 'sm:pr-5 lg:pr-6' },
+}
+
+const ICON_SIZE: Record<ButtonSize, string> = {
+  sm: 'size-3.5',
+  md: 'size-4',
+  lg: 'size-4 lg:size-[18px]',
+}
+
+const VARIANT: Record<ButtonVariant, string> = {
+  filled: 'gradient-inszone text-white hover:brightness-110 hover:-translate-y-px',
+  soft: 'bg-primary-100 text-primary-700 hover:bg-primary-200',
+  outlined: 'border border-neutral-300 text-primary-950 hover:border-primary-400 hover:bg-primary-100',
+  ghost: 'text-primary-700 hover:bg-primary-100 hover:text-primary-800',
+  navy: 'bg-primary-800 text-white hover:brightness-110 hover:-translate-y-px',
+  white: 'bg-white text-primary-950 hover:brightness-110 hover:-translate-y-px',
+  link: 'text-primary-700 p-0 hover:underline',
+}
+---
+
+<Tag
+  href={ href }
+  class:list={ [
+    'group inline-flex max-w-full min-w-0 cursor-pointer items-center justify-center font-semibold leading-none no-underline transition duration-200 active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-45',
+    SIZE[ size ],
+    Icon && SIZE_ICON_PADDING[ size ][ iconPosition ],
+    VARIANT[ variant ],
+    className,
+  ] }
+  { ...rest }
+>
+  { Icon && iconPosition === 'left' && (
+    <span class:list={ [ 'inline-flex shrink-0 transition-transform duration-200 group-hover:-translate-x-1', ICON_SIZE[ size ] ] }>
+      <Icon />
+    </span>
+  )}
+  <span><slot /></span>
+  { Icon && iconPosition === 'right' && (
+    <span class:list={ [ 'inline-flex shrink-0 transition-transform duration-200 group-hover:translate-x-1', ICON_SIZE[ size ] ] }>
+      <Icon />
+    </span>
+  )}
+</Tag>

@@ -1,0 +1,75 @@
+---
+/**
+ * Photo + glass panel card used by the "Built For Your Business" grid.
+ * `align` decides which edge the photo hangs off; the panel always overlaps it
+ * by 64px (24px on small screens) so the blur reads over the image.
+ */
+import ArrowRightSmallIcon from '@/components/icons/ArrowRightSmallIcon.astro'
+import Typography from '@/components/ui/Typography.astro'
+
+interface Props {
+  title: string
+  body: string
+  linkLabel: string
+  href: string
+  image: string
+  imageAlt: string
+  align?: 'left' | 'right'
+  class?: string
+}
+
+const {
+  title,
+  body,
+  linkLabel,
+  href,
+  image,
+  imageAlt,
+  align = 'left',
+  class: className,
+} = Astro.props
+---
+
+<article
+  class:list={ [
+    'group relative flex w-full max-w-[640px] min-h-40 items-end rounded-2xl bg-primary-100 md:h-[312px] md:rounded-3xl',
+    align === 'right' && 'flex-row-reverse',
+    className,
+  ] }
+>
+  <img
+    src={ image }
+    alt={ imageAlt }
+    loading="lazy"
+    class:list={ [
+      'relative z-1 h-[159px] w-[140px] shrink-0 self-end object-cover transition-transform duration-300 group-hover:scale-[1.03] md:h-[340px] md:w-[300px]',
+      align === 'left' ? '-mr-6 rounded-bl-3xl md:-mr-16' : '-ml-6 rounded-br-3xl md:-ml-16',
+      // Grow upward and inward only. Scaling from the default centre origin
+      // pushes the figure out through the card's base, and the card has no
+      // overflow clipping — anchoring the origin to the bottom outer corner
+      // keeps the feet on the baseline and the growth away from the edge.
+      align === 'left' ? 'origin-bottom-left' : 'origin-bottom-right',
+    ] }
+  />
+  <div
+    class="relative z-2 flex min-w-0 flex-1 flex-col justify-end gap-4 self-end rounded-2xl bg-white/60 p-5 backdrop-blur-lg md:self-auto md:rounded-3xl md:p-10"
+  >
+    <div class="flex flex-col gap-2">
+      <Typography variant="inherit" as="h3" class="text-[clamp(12px,3.6vw,18px)] leading-tight font-bold text-primary-500 md:text-2xl md:leading-none">
+        { title }
+      </Typography>
+      <Typography variant="inherit" as="p" class="text-[clamp(10px,2.4vw,12px)] leading-[1.24] text-neutral-600 md:text-sm md:leading-[1.4]">
+        { body }
+      </Typography>
+    </div>
+    <a
+      href={ href }
+      class="inline-flex items-center gap-2 self-end text-xs leading-none font-semibold text-primary-950 no-underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 md:self-start md:text-sm"
+    >
+      { linkLabel }
+      <span class="inline-flex size-3.5 transition-transform duration-250 group-hover:translate-x-1">
+        <ArrowRightSmallIcon />
+      </span>
+    </a>
+  </div>
+</article>

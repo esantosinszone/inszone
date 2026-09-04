@@ -1,0 +1,50 @@
+---
+/**
+ * "Built For Your Business" — two columns of policy cards. The left column is
+ * pushed down half a gap on desktop so the cards interlock rather than lining
+ * up in flat rows.
+ */
+import { policies } from '@/data/home'
+import ArrowRightIcon from '@/components/icons/ArrowRightIcon.astro'
+import Button from '@/components/ui/Button.astro'
+import Container from '@/components/ui/Container.astro'
+import PolicyCard from '@/components/ui/PolicyCard.astro'
+import SectionHeading from '@/components/ui/SectionHeading.astro'
+
+const columns = [ policies.slice( 0, 2 ), policies.slice( 2 ) ]
+
+/**
+ * Parallax rate per column, read by Locomotive Scroll. Opposite signs so the
+ * two columns drift apart slightly as the section passes, which plays into the
+ * offset they already have. The value goes on the COLUMN, never on the cards —
+ * Locomotive writes an inline `transform`, and the cards' `reveal-up` animates
+ * that same property, so the two have to live on different elements.
+ */
+const COLUMN_SPEED = [ '-0.05', '0.05' ]
+---
+
+<section class="bg-white">
+  <Container class="flex flex-col items-stretch gap-10 py-10 md:py-20">
+    <SectionHeading
+      title="Built For Your Business"
+      subtitle="Grow your business faster with tailored insurance solutions. Our customizable policies adapt as you scale, simplifying coverage management so you can focus on what matters."
+      class="max-w-[1020px]"
+    />
+
+    <div class="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 md:gap-8">
+      { columns.map(( column, columnIndex ) => (
+        <div
+          data-scroll
+          data-scroll-speed={ COLUMN_SPEED[ columnIndex ] }
+          class:list={ [ 'flex min-w-0 flex-col gap-6 md:gap-10', columnIndex === 0 && 'md:pt-10' ] }
+        >
+          { column.map(( policy ) => <PolicyCard { ...policy } class="reveal-up" />) }
+        </div>
+      ))}
+    </div>
+
+    <div class="flex justify-center pt-4">
+      <Button href="/products" size="lg" icon={ ArrowRightIcon } class="reveal-up">See More Policies</Button>
+    </div>
+  </Container>
+</section>

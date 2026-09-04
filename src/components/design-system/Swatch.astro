@@ -1,0 +1,22 @@
+---
+/** One colour chip: the fill, the token name and the resolved hex. */
+import Typography from '@/components/ui/Typography.astro'
+
+interface Props {
+  token: string
+  /** Set when the fill is light enough that the label needs a border. */
+  outlined?: boolean
+}
+
+const { token, outlined } = Astro.props
+---
+
+<div class="flex flex-col gap-1">
+  <div
+    class:list={ [ 'h-14 rounded-lg', outlined && 'border border-neutral-200' ] }
+    style={ `background:var(--color-${ token })` }
+  >
+  </div>
+  <Typography variant="caption" class="font-mono text-neutral-700">{ token }</Typography>
+  <Typography variant="caption" class="font-mono" data-swatch-hex={ token }>—</Typography>
+</div>

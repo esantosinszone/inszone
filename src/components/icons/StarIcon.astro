@@ -1,0 +1,29 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+interface Props extends HTMLAttributes<'svg'> {
+  /** `full` paints the whole star, `half` clips the fill to 50%, `empty` shows only the track. */
+  fill?: 'full' | 'half' | 'empty'
+}
+
+const { fill = 'full', class: className, ...rest } = Astro.props
+const PATH = 'M8 1.3l2 4.2 4.6.6-3.4 3.2.9 4.5L8 11.6l-4.1 2.2.9-4.5L1.4 6.1 6 5.5 8 1.3z'
+---
+
+<svg
+  viewBox="0 0 16 16"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false"
+  class:list={ [ 'block shrink-0', className ] }
+  { ...rest }
+>
+  <path d={ PATH } class="fill-neutral-200" />
+  { fill !== 'empty' && (
+    <path
+      d={ PATH }
+      class="fill-[#F5B715]"
+      style={ fill === 'half' ? 'clip-path:inset(0 50% 0 0)' : undefined }
+    />
+  )}
+</svg>

@@ -1,0 +1,54 @@
+---
+/**
+ * Chrome-free layout for the design system. It deliberately skips the
+ * marketing header and footer so the documented components are the only thing
+ * on the page, but keeps `Head` (fonts, tokens, favicons) so everything
+ * renders exactly as it does on the site.
+ */
+import Head from '@/components/Head.astro'
+import Typography from '@/components/ui/Typography.astro'
+import '@/styles/global.css'
+
+interface Props {
+  title?: string
+  sections: { id: string, label: string }[]
+}
+
+const { title = 'Design System — Inszone', sections } = Astro.props
+---
+
+<!doctype html>
+<html lang="en">
+  <Head title={ title } />
+  <body class="bg-white">
+    <div class="mx-auto flex w-full max-w-[1440px] gap-10 px-6 py-12 lg:px-10">
+      <aside class="sticky top-12 hidden h-fit w-56 shrink-0 lg:block">
+        <Typography variant="eyebrow" as="div" class="mb-4 text-neutral-400">On this page</Typography>
+        <nav class="flex flex-col gap-1">
+          { sections.map(({ id, label }) => (
+            <a
+              href={ `#${ id }` }
+              class="rounded-md px-3 py-2 text-sm font-medium text-neutral-600 no-underline transition-colors hover:bg-primary-50 hover:text-primary-700"
+            >
+              { label }
+            </a>
+          ))}
+        </nav>
+      </aside>
+      <main class="min-w-0 flex-1">
+        <slot />
+      </main>
+    </div>
+
+    <script>
+      // Fill each swatch's hex label from the resolved custom property, so the
+      // page never drifts out of sync with global.css.
+      const style = getComputedStyle( document.documentElement )
+      document.querySelectorAll<HTMLElement>( '[data-swatch-hex]' ).forEach(( node ) => {
+        const token = node.dataset.swatchHex
+        if ( !token ) return
+        node.textContent = style.getPropertyValue( `--color-${ token }` ).trim().toUpperCase() || '—'
+      })
+    </script>
+  </body>
+</html>

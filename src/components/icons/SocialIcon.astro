@@ -1,0 +1,33 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+import { SOCIAL_PATHS, type SocialNetwork } from './social'
+
+interface Props extends HTMLAttributes<'svg'> {
+  network: SocialNetwork
+}
+
+const { network, class: className, ...rest } = Astro.props
+const { label, paths, round } = SOCIAL_PATHS[ network ]
+---
+
+<svg
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label={ label }
+  class:list={ [ 'size-full', className ] }
+  { ...rest }
+>
+  { paths.map(( d ) => (
+    <path
+      d={ d }
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap={ round ? undefined : 'round' }
+      stroke-linejoin="round"
+      fill-rule={ round ? 'evenodd' : undefined }
+      clip-rule={ round ? 'evenodd' : undefined }
+    />
+  ))}
+</svg>

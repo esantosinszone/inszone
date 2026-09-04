@@ -1,0 +1,45 @@
+---
+/** Average score for one review platform (Google / Facebook / Yelp). */
+import Stars from '@/components/ui/Stars.astro'
+import Typography from '@/components/ui/Typography.astro'
+
+interface Props {
+  platform: string
+  score: number
+  /** Tailwind text-* class carrying the platform's brand colour. */
+  toneClass: string
+  class?: string
+}
+
+const { platform, score, toneClass, class: className } = Astro.props
+---
+
+<div
+  class:list={ [
+    'flex flex-col items-center gap-2 overflow-hidden rounded-lg bg-primary-50 px-2 py-3 md:h-[125px] md:flex-row md:items-start md:gap-4 md:p-8',
+    className,
+  ] }
+>
+  <Typography
+    variant="inherit"
+    as="span"
+    class:list={ [ 'text-2xl leading-none font-black md:text-5xl', toneClass ] }
+  >
+    { score }
+  </Typography>
+  <div class="flex min-w-0 flex-1 flex-col items-center gap-1 md:items-stretch md:justify-center md:gap-3 md:self-stretch">
+    <div class="flex flex-col items-center gap-2 md:items-start">
+      <Typography
+        variant="inherit"
+        as="span"
+        class:list={ [ 'text-sm leading-none font-bold md:text-xl', toneClass ] }
+      >
+        { platform }
+      </Typography>
+      <Typography variant="inherit" as="span" class="hidden text-sm leading-none font-medium text-neutral-600 md:inline">
+        Average Rating
+      </Typography>
+    </div>
+    <Stars value={ score } gap="loose" class="[&_svg]:size-[13px] md:[&_svg]:size-4" />
+  </div>
+</div>

@@ -1,0 +1,24 @@
+---
+import type { HTMLAttributes } from 'astro/types'
+
+type Props = HTMLAttributes<'svg'>
+
+const { class: className, ...rest } = Astro.props
+---
+
+<svg
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false"
+  class:list={ ['size-full', className] }
+  { ...rest }
+>
+  <g>
+  <path d="M4.00254 17L3.99822 27.994C3.99564 34.5958 3.99434 37.8968 6.0447 39.948C8.09508 41.9992 11.396 41.9992 17.9979 41.9994L30 41.9996C36.5988 41.9998 39.898 42 41.9482 39.9502C43.9984 37.9004 43.9992 34.601 44.0004 28.0024L44.0026 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M16.9971 13C16.9971 10.1911 16.9971 8.78662 17.6713 7.77772C17.9631 7.34096 18.3381 6.96596 18.7749 6.67412C19.7837 6 21.1882 6 23.9972 6C26.806 6 28.2106 6 29.2194 6.67412C29.6562 6.96596 30.0312 7.34096 30.323 7.77772C30.9972 8.78662 30.9972 10.1911 30.9972 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M39.996 13.0003L7.9977 13C5.7888 13.0001 3.99752 14.7914 3.99732 17.0003C3.99752 21.4182 7.5801 25.0008 11.998 25.0012H35.9956C40.4136 25.001 43.996 21.4186 43.9962 17.0006C43.996 14.7916 42.2048 13.0005 39.996 13.0003Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M19.9971 25V27C19.9971 27.93 19.9971 28.395 20.0994 28.7764C20.3768 29.8118 21.1854 30.6204 22.2206 30.8978C22.6022 31 23.0672 31 23.9972 31C24.9272 31 25.392 31 25.7736 30.8978C26.8088 30.6204 27.6176 29.8118 27.895 28.7764C27.9972 28.395 27.9972 27.93 27.9972 27V25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
