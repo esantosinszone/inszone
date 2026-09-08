@@ -1,5 +1,14 @@
 ---
+/**
+ * Rating star. Uses the shape from `@hugeicons/core-free-icons` like every
+ * other icon, but FILLS it instead of stroking it — the ratings need solid
+ * stars, and the free icon set is stroke-only.
+ *
+ * Drawn twice: an always-present track, plus the gold star clipped to however
+ * much of it should be lit.
+ */
 import type { HTMLAttributes } from 'astro/types'
+import { StarIcon as StarShape } from '@hugeicons/core-free-icons'
 
 interface Props extends HTMLAttributes<'svg'> {
   /** `full` paints the whole star, `half` clips the fill to 50%, `empty` shows only the track. */
@@ -7,21 +16,24 @@ interface Props extends HTMLAttributes<'svg'> {
 }
 
 const { fill = 'full', class: className, ...rest } = Astro.props
-const PATH = 'M8 1.3l2 4.2 4.6.6-3.4 3.2.9 4.5L8 11.6l-4.1 2.2.9-4.5L1.4 6.1 6 5.5 8 1.3z'
+
+/** The star is a single closed path, so filling it gives a solid star. */
+const [ [ , shape ] ] = StarShape
+const path = String(( shape as Record<string, unknown> ).d )
 ---
 
 <svg
-  viewBox="0 0 16 16"
+  viewBox="0 0 24 24"
   xmlns="http://www.w3.org/2000/svg"
   aria-hidden="true"
   focusable="false"
   class:list={ [ 'block shrink-0', className ] }
   { ...rest }
 >
-  <path d={ PATH } class="fill-neutral-200" />
+  <path d={ path } class="fill-neutral-200" />
   { fill !== 'empty' && (
     <path
-      d={ PATH }
+      d={ path }
       class="fill-[#F5B715]"
       style={ fill === 'half' ? 'clip-path:inset(0 50% 0 0)' : undefined }
     />

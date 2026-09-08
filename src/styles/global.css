@@ -114,6 +114,18 @@
   --default-transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-app: cubic-bezier(0.32, 0.72, 0, 1);
 
+  /* "Mobile" for this project is 480px and below — narrower than Tailwind's
+     `sm` (640px), so headings need their own step below it. */
+  --breakpoint-xs: 30rem;
+
+  /* Headline sizes. Declared here rather than as one-off arbitrary values so
+     they exist as real utilities — `text-section-title`, `text-hero-title`,
+     `text-hero-subtitle` — and so the responsive ramp further down can restate
+     the token once instead of every element restating a breakpoint. */
+  --text-section-title: 2.5rem;   /* 40px */
+  --text-hero-title: 3rem;        /* 48px */
+  --text-hero-subtitle: 1.875rem; /* 30px */
+
   --color-primary: #6F8CC0;
   --color-primary-50: #F3F6FB;
   --color-primary-100: #E3EBF6;
@@ -147,25 +159,138 @@
   --font-display: Arial, Helvetica, sans-serif;
 }
 
-@layer {
-  .transition-inszone {
-    transition: var(--transition-inszone) 0.8s;
+/* ─── Section rhythm ─────────────────────────────────────────────────────────
+   Every section declares its top/bottom spacing ONCE, as the desktop value
+   multiplied by `--section-scale`:
+
+       py-[calc(7.5rem*var(--section-scale))]
+
+   Only the scale reacts to the viewport, so the whole page tightens together
+   instead of each section crossing its own breakpoints at its own moment —
+   which is what made the side-by-side spacing look irregular.
+
+   Desktop is left at exactly the designed value (scale 1). The step down starts
+   at the tablet boundary and goes further on phones.
+
+   Clearances are NOT part of this: the header offset on the hero and the
+   `lg:pt-44` that lets the carrier panel sit under the hero photo have to keep
+   their absolute size or the layout overlaps. */
+:root {
+  --section-scale: 1;
+
+  /* Two values drive every section's frame:
+
+       --section-pad  the side gutter, and below xl the padding on all four
+                      sides — that is where "the same number everywhere"
+                      applies.
+       --section-py   the top and bottom padding. Above xl it keeps the design's
+                      own rhythm, which is roomier than the gutter; below xl it
+                      collapses onto --section-pad so the frame is even.
+
+     Two documented exceptions, both structural rather than padding: the stats
+     band reserves room at the bottom for the PRESENCE watermark (from md up,
+     where that watermark exists), and the carrier strip keeps its xl top
+     clearance for the hero photo that overlaps into it. */
+  --section-pad: 2rem;
+  --section-py: 5rem;
+}
+
+/* The steps sit on Tailwind's `xl` (1280) and `md` (768), written as
+   `width < N` so each starts exactly where the matching utilities stop, plus
+   this project's own phone boundary at 480, which Tailwind has no name for.
+   From xl down the vertical padding is the side padding: one number on all four
+   sides, stepping with the viewport. */
+@media (width < 1280px) {
+  :root {
+    --section-scale: 0.65;
+    --section-py: var(--section-pad);
   }
-  .shadow-inszone {
-    box-shadow: 0 12px 56px rgba(0,46,78,0.08);
+}
+
+@media (width < 768px) {
+  :root {
+    --section-pad: 1.5rem;
   }
-  .gradient-inszone {
-    background: linear-gradient(45deg, var(--color-primary-600) 0%, var(--color-primary-400) 100%);
+}
+
+/* ─── Headline ramp ──────────────────────────────────────────────────────────
+   The three headline sizes that step down on their own schedule, kept next to
+   the section rhythm so the page's whole responsive behaviour reads in one
+   place. Full desktop values hold above `xl`; below it they drop to 70%, and
+   the phone step is a fixed floor so a long title still fits a 480px column.
+
+   Note: the subtitle's phone value (24px) is LARGER than its tablet value
+   (21px, = 70% of 30px). That's what was asked for, so it's what's here — but
+   it means the subtitle grows as the screen narrows, which no other text on
+   the page does. Say the word and I'll make the tablet step 24px too. */
+@media (width < 1280px) {
+  :root {
+    --text-section-title: 1.75rem;    /* 70% */
+    --text-hero-title: 2.1rem;        /* 70% */
+    --text-hero-subtitle: 1.3125rem;  /* 70% */
   }
-  .gradient-inszone-dark {
-    background: linear-gradient(45deg, var(--color-primary-950) 0%, var(--color-primary-800) 100%);
+}
+
+@media (width < 480px) {
+  :root {
+    --text-section-title: 1.5rem; /* 24px */
+    --text-hero-title: 2rem;      /* 32px */
+    --text-hero-subtitle: 1.5rem; /* 24px */
+  }
+}
+
+@utility transition-inszone {
+  transition: var(--transition-inszone) 0.8s;
+}
+
+@utility shadow-inszone {
+  box-shadow: 0 12px 56px rgba(0, 46, 78, 0.08);
+}
+
+@utility gradient-inszone {
+  background: linear-gradient(45deg, var(--color-primary-600) 0%, var(--color-primary-400) 100%);
+}
+
+@utility gradient-inszone-dark {
+  background: linear-gradient(45deg, var(--color-primary-950) 0%, var(--color-primary-800) 100%);
+}
+
+/* ─── Mobile section stack ───────────────────────────────────────────────────
+   Below md the page stops being a column of inset cards and becomes a stack of
+   full-bleed slabs, each one riding up onto the section above it with its two
+   top corners rounded.
+
+   The three values are deliberately the same 24px and have to stay that way:
+   the pull-up is what creates the overlap, the radius is what makes the seam
+   read as a card edge, and the extra bottom padding is what keeps the covered
+   section's own content clear of the slab landing on it. Change one and the
+   other two have to follow.
+
+   The padding is on the section while the sections' own vertical rhythm lives
+   on their inner Container, so the two compose instead of overwriting each
+   other — that's why no section sets its own vertical padding.
+
+   A relative position with a flat z-index puts every slab in one stacking
+   context so they paint in document order: later sections over earlier ones,
+   which is the direction the overlap has to go. It is unlayered on purpose, so
+   it wins over the utility classes it has to override (rounded-*, z-*). */
+@media (width < 768px) {
+  .stack {
+    --stack-overlap: 1.5rem;
+
+    position: relative;
+    z-index: 1;
+    margin-top: calc(-1 * var(--stack-overlap));
+    padding-bottom: var(--stack-overlap);
+    border-top-left-radius: var(--stack-overlap);
+    border-top-right-radius: var(--stack-overlap);
   }
 }
 
 .reveal-left {
   opacity: 0;
   transform: translate3d(-120px, 0, 0);
-  transition: var(--transition-inszone) 1.2s;
+  transition: opacity 1.2s var(--ease-app), transform 1.2s var(--ease-app), visibility 1.2s var(--ease-app);
   visibility: hidden;
 }
 
@@ -178,7 +303,7 @@
 .reveal-up {
   opacity: 0;
   transform: translate3d(0, 120px, 0);
-  transition: var(--transition-inszone) 1.2s;
+  transition: opacity 1.2s var(--ease-app), transform 1.2s var(--ease-app), visibility 1.2s var(--ease-app);
   visibility: hidden;
 }
 
@@ -190,7 +315,7 @@
 
 .reveal-fade {
   opacity: 0;
-  transition: var(--transition-inszone) 1.2s;
+  transition: opacity 1.2s var(--ease-app), transform 1.2s var(--ease-app), visibility 1.2s var(--ease-app);
 }
 
 .reveal-fade__visible {

@@ -26,25 +26,14 @@ import StatCard from '@/components/ui/StatCard.astro'
 import BlogCard from '@/components/ui/BlogCard.astro'
 import SectionHeading from '@/components/ui/SectionHeading.astro'
 
-import ArrowRightIcon from '@/components/icons/ArrowRightIcon.astro'
-import ArrowRightSmallIcon from '@/components/icons/ArrowRightSmallIcon.astro'
-import ChevronCircleIcon from '@/components/icons/ChevronCircleIcon.astro'
-import SocialIcon from '@/components/icons/SocialIcon.astro'
+import Icon from '@/components/icons/Icon.astro'
 import TrustedChoiceBadge from '@/components/icons/TrustedChoiceBadge.astro'
-import FileSecurityIcon from '@/components/icons/FileSecurityIcon.astro'
-import BalanceScaleIcon from '@/components/icons/BalanceScaleIcon.astro'
-import ShieldUserIcon from '@/components/icons/ShieldUserIcon.astro'
-import Agreement02Icon from '@/components/icons/Agreement02Icon.astro'
-import HealthcareIcon from '@/components/icons/HealthcareIcon.astro'
-import Briefcase01Icon from '@/components/icons/Briefcase01Icon.astro'
-import Car01Icon from '@/components/icons/Car01Icon.astro'
-import UmbrellaIcon from '@/components/icons/UmbrellaIcon.astro'
-import PiggyBankIcon from '@/components/icons/PiggyBankIcon.astro'
-import TaskDone01Icon from '@/components/icons/TaskDone01Icon.astro'
-import Navigation03Icon from '@/components/icons/Navigation03Icon.astro'
-import Location05Icon from '@/components/icons/Location05Icon.astro'
-import UserGroup03Icon from '@/components/icons/UserGroup03Icon.astro'
-import HandshakeIcon from '@/components/icons/HandshakeIcon.astro'
+import {
+  ArrowRight02Icon, CircleArrowDown01Icon, FileSecurityIcon, JusticeScale01Icon, ShieldUserIcon,
+  Agreement02Icon, HealtcareIcon, Briefcase01Icon, Car01Icon, UmbrellaIcon, PiggyBankIcon,
+  TaskDone01Icon, Navigation03Icon, Location05Icon, UserGroup03Icon,
+  Facebook02Icon, NewTwitterIcon, InstagramIcon, Linkedin02Icon,
+} from '@hugeicons/core-free-icons'
 
 import { carriers, features, policies, posts, ratings, reviews, stats } from '@/data/home'
 
@@ -84,14 +73,13 @@ const BUTTON_VARIANTS = [ 'filled', 'soft', 'outlined', 'ghost', 'navy', 'white'
 const BUTTON_SIZES = [ 'sm', 'md', 'lg' ] as const
 
 const ICONS = [
-  { name: 'ArrowRightIcon', icon: ArrowRightIcon },
-  { name: 'ArrowRightSmallIcon', icon: ArrowRightSmallIcon },
-  { name: 'ChevronCircleIcon', icon: ChevronCircleIcon },
+  { name: 'ArrowRight02Icon', icon: ArrowRight02Icon },
+  { name: 'CircleArrowDown01Icon', icon: CircleArrowDown01Icon },
   { name: 'FileSecurityIcon', icon: FileSecurityIcon },
-  { name: 'BalanceScaleIcon', icon: BalanceScaleIcon },
+  { name: 'JusticeScale01Icon', icon: JusticeScale01Icon },
   { name: 'ShieldUserIcon', icon: ShieldUserIcon },
   { name: 'Agreement02Icon', icon: Agreement02Icon },
-  { name: 'HealthcareIcon', icon: HealthcareIcon },
+  { name: 'HealtcareIcon', icon: HealtcareIcon },
   { name: 'Briefcase01Icon', icon: Briefcase01Icon },
   { name: 'Car01Icon', icon: Car01Icon },
   { name: 'UmbrellaIcon', icon: UmbrellaIcon },
@@ -100,7 +88,6 @@ const ICONS = [
   { name: 'Navigation03Icon', icon: Navigation03Icon },
   { name: 'Location05Icon', icon: Location05Icon },
   { name: 'UserGroup03Icon', icon: UserGroup03Icon },
-  { name: 'HandshakeIcon', icon: HandshakeIcon },
 ]
 
 const REVEALS = [
@@ -188,27 +175,27 @@ const REVEALS = [
     <Demo label="Variants">
       <div class="flex flex-wrap items-center gap-4">
         { BUTTON_VARIANTS.map(( variant ) => (
-          <Button variant={ variant } icon={ ArrowRightIcon }>{ variant }</Button>
+          <Button variant={ variant } icon={ ArrowRight02Icon }>{ variant }</Button>
         ))}
       </div>
     </Demo>
     <Demo label="Variants on dark" tone="dark">
       <div class="flex flex-wrap items-center gap-4">
-        <Button variant="white" icon={ ArrowRightIcon }>white</Button>
-        <Button variant="navy" icon={ ArrowRightIcon }>navy</Button>
+        <Button variant="white" icon={ ArrowRight02Icon }>white</Button>
+        <Button variant="navy" icon={ ArrowRight02Icon }>navy</Button>
       </div>
     </Demo>
     <Demo label="Sizes">
       <div class="flex flex-wrap items-center gap-4">
         { BUTTON_SIZES.map(( size ) => (
-          <Button size={ size } icon={ ArrowRightIcon }>Size { size }</Button>
+          <Button size={ size } icon={ ArrowRight02Icon }>Size { size }</Button>
         ))}
       </div>
     </Demo>
     <Demo label="Icon position & disabled">
       <div class="flex flex-wrap items-center gap-4">
-        <Button icon={ ArrowRightIcon } iconPosition="left">Icon left</Button>
-        <Button icon={ ArrowRightIcon }>Icon right</Button>
+        <Button icon={ ArrowRight02Icon } iconPosition="left">Icon left</Button>
+        <Button icon={ ArrowRight02Icon }>Icon right</Button>
         <Button>No icon</Button>
         <Button disabled>Disabled</Button>
       </div>
@@ -363,9 +350,9 @@ const REVEALS = [
   >
     <Demo>
       <div class="grid grid-cols-3 gap-6 sm:grid-cols-5 lg:grid-cols-6">
-        { ICONS.map(({ name, icon: Icon }) => (
+        { ICONS.map(({ name, icon }) => (
           <div class="flex flex-col items-center gap-2 text-center">
-            <span class="inline-flex size-10 text-primary-500"><Icon /></span>
+            <span class="inline-flex size-10 text-primary-500"><Icon icon={ icon } /></span>
             <Typography variant="caption" class="font-mono break-all">{ name }</Typography>
           </div>
         ))}
@@ -373,9 +360,9 @@ const REVEALS = [
     </Demo>
     <Demo label="Social & brand" tone="dark">
       <div class="flex flex-wrap items-center gap-6">
-        { ( [ 'facebook', 'x', 'instagram', 'linkedin' ] as const ).map(( network ) => (
+        { [ Facebook02Icon, NewTwitterIcon, InstagramIcon, Linkedin02Icon ].map(( social ) => (
           <span class="inline-flex size-10 items-center justify-center rounded-full bg-primary-500 text-white">
-            <span class="inline-flex size-[18px]"><SocialIcon network={ network } /></span>
+            <span class="inline-flex size-[18px]"><Icon icon={ social } /></span>
           </span>
         ))}
         <TrustedChoiceBadge />

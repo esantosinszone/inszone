@@ -5,15 +5,17 @@
  * always spans the band no matter how wide it gets.
  */
 import { stats } from '@/data/home'
+import Container from '@/components/ui/Container.astro'
 import StatCard from '@/components/ui/StatCard.astro'
 
 const WATERMARK = 'PRESENCE'
 const SEPARATOR = 'pointer-events-none hidden h-px flex-1 bg-white/36 xl:mt-38 xl:block'
 ---
 
-<section class="mx-auto max-w-[calc(1480px+3rem)] md:px-6">
+<section class="stack max-md:gradient-inszone-dark">
+  <Container width="wide" flush>
   <div
-    class="@container relative flex flex-col-reverse gap-6 overflow-hidden rounded-t-3xl gradient-inszone-dark px-4 pt-8 pb-20 md:flex-col md:gap-0 md:rounded-3xl md:px-6 md:pt-10 md:pb-30 xl:px-32 xl:pt-20 xl:pb-55"
+    class="@container relative flex flex-col-reverse gap-6 overflow-hidden rounded-t-3xl gradient-inszone-dark px-[var(--section-pad)] py-[var(--section-py)] max-md:rounded-none max-md:bg-none max-xs:px-0 md:flex-col md:gap-0 md:rounded-3xl md:pb-[calc(13.75rem*var(--section-scale))] xl:px-32"
   >
     <div
       class="relative z-1 flex flex-wrap items-start justify-evenly gap-y-11 xl:flex-nowrap xl:justify-between xl:gap-y-0"
@@ -53,4 +55,5 @@ const SEPARATOR = 'pointer-events-none hidden h-px flex-1 bg-white/36 xl:mt-38 x
       { WATERMARK }
     </p>
   </div>
+  </Container>
 </section>

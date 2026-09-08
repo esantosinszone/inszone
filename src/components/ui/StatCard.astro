@@ -1,19 +1,20 @@
 ---
 /** Icon + figure + caption. `tone` follows the surface it sits on. */
-import type { AstroComponent } from '@/types'
+import type { IconSvgElement } from '@hugeicons/react'
+import Icon from '@/components/icons/Icon.astro'
 import Typography from '@/components/ui/Typography.astro'
 
 interface Props {
   value: string
   label: string
-  icon: AstroComponent
+  icon: IconSvgElement
   tone?: 'dark' | 'light'
   /** Count the figure up from zero when it scrolls into view. */
   count?: boolean
   class?: string
 }
 
-const { value, label, icon: Icon, tone = 'dark', count = true, class: className } = Astro.props
+const { value, label, icon, tone = 'dark', count = true, class: className } = Astro.props
 
 /** Strip the thousands separator so the counter has a number to climb to. */
 const numeric = Number( value.replace( /[^\d.-]/g, '' ))
@@ -29,12 +30,14 @@ const countTo = count && Number.isFinite( numeric ) ? numeric : undefined
 >
   <span
     class:list={ [
-      'inline-flex size-12 md:size-16 lg:size-20',
+      'inline-flex size-12 md:size-16 xl:size-20',
       tone === 'light' && 'text-primary-500',
     ] }
     aria-hidden="true"
   >
-    <Icon />
+    <!-- Hairline: these are the largest icons on the site (80px at lg), where
+         the default weight of 1 reads heavy against the thin figures. -->
+    <Icon icon={ icon } strokeWidth={ 0.5 } />
   </span>
   <div class="flex flex-col items-center gap-3">
     <Typography

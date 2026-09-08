@@ -5,7 +5,8 @@
  * same surface treatment.
  */
 import type { HTMLAttributes } from 'astro/types'
-import type { AstroComponent } from '@/types'
+import type { IconSvgElement } from '@hugeicons/react'
+import Icon from '@/components/icons/Icon.astro'
 
 export type ButtonVariant = 'filled' | 'soft' | 'outlined' | 'ghost' | 'navy' | 'white' | 'link'
 export type ButtonSize = 'sm' | 'md' | 'lg'
@@ -14,8 +15,8 @@ interface Props extends Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'si
   variant?: ButtonVariant
   size?: ButtonSize
   href?: string
-  /** Icon component rendered beside the label. */
-  icon?: AstroComponent
+  /** Hugeicons glyph rendered beside the label. */
+  icon?: IconSvgElement
   iconPosition?: 'left' | 'right'
 }
 
@@ -23,7 +24,7 @@ const {
   variant = 'filled',
   size = 'md',
   href,
-  icon: Icon,
+  icon,
   iconPosition = 'right',
   class: className,
   ...rest
@@ -66,21 +67,21 @@ const VARIANT: Record<ButtonVariant, string> = {
   class:list={ [
     'group inline-flex max-w-full min-w-0 cursor-pointer items-center justify-center font-semibold leading-none no-underline transition duration-200 active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-45',
     SIZE[ size ],
-    Icon && SIZE_ICON_PADDING[ size ][ iconPosition ],
+    icon && SIZE_ICON_PADDING[ size ][ iconPosition ],
     VARIANT[ variant ],
     className,
   ] }
   { ...rest }
 >
-  { Icon && iconPosition === 'left' && (
+  { icon && iconPosition === 'left' && (
     <span class:list={ [ 'inline-flex shrink-0 transition-transform duration-200 group-hover:-translate-x-1', ICON_SIZE[ size ] ] }>
-      <Icon />
+      <Icon icon={ icon } />
     </span>
   )}
   <span><slot /></span>
-  { Icon && iconPosition === 'right' && (
+  { icon && iconPosition === 'right' && (
     <span class:list={ [ 'inline-flex shrink-0 transition-transform duration-200 group-hover:translate-x-1', ICON_SIZE[ size ] ] }>
-      <Icon />
+      <Icon icon={ icon } />
     </span>
   )}
 </Tag>

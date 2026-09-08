@@ -44,7 +44,7 @@ const iconSizes = {
 
 <button 
   class:list={[
-    'inline-flex items-center justify-center cursor-pointer font-semibold transition-all duration-300 group',
+    'inline-flex items-center justify-center cursor-pointer font-semibold transition-[background-color,border-color,color,box-shadow] duration-300 group',
     sizes[size],
     variants[variant],
     className
@@ -69,7 +69,7 @@ const iconSizes = {
 <style>
   .btn-main{
     background: linear-gradient(90deg, var(--c1, var(--color-primary-600)), var(--c2, var(--color-primary-400)) 51%, var(--c1, var(--color-primary-600))) var(--x, 0)/ 200%;
-    transition: all 0.3s var(--ease-app);
+    transition: background-position 0.3s var(--ease-app);
   }
 
   .btn-main:hover { --x: 100%; }

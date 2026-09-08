@@ -7,8 +7,8 @@ import ReviewCard from '@/components/ui/ReviewCard.astro'
 import Typography from '@/components/ui/Typography.astro'
 ---
 
-<section class="bg-white">
-  <Container class="flex flex-col items-stretch gap-4 pt-8 pb-14 md:items-center md:gap-8 md:py-20">
+<section class="stack bg-white">
+  <Container class="flex flex-col items-stretch gap-4 py-[var(--section-py)] md:items-center md:gap-8">
     <div class="flex flex-col items-start gap-2 text-left md:items-center md:text-center">
       <Typography variant="h2" class="reveal-up">What Our Clients Say About Us</Typography>
     </div>
@@ -24,16 +24,24 @@ import Typography from '@/components/ui/Typography.astro'
       ))}
     </div>
 
+    <!-- All four reviews at every width; only the shape of the strip changes —
+         one column on a phone, a 2x2 grid from xs, a single row from md.
+         The dividers follow the shape: a card gets a top rule when it starts a
+         new row and a left rule when it sits next to another card, so the rules
+         land between cards in all three layouts and never on an outer edge
+         (the strip's own border draws that). Four items, three fixed layouts —
+         stating the rules per index is clearer here than a nth-child matrix. -->
     <div
-      class="grid w-full grid-cols-2 overflow-hidden rounded-lg border border-neutral-300 md:flex md:items-stretch md:rounded-2xl"
+      class="grid w-full grid-cols-1 overflow-hidden rounded-lg border border-neutral-300 xs:grid-cols-2 md:grid-cols-4 md:rounded-2xl"
     >
       { reviews.map(( review, index ) => (
         <ReviewCard
           { ...review }
           class:list={ [
-            'reveal-up min-w-0 md:flex-1',
-            index >= 2 && 'max-md:hidden',
-            index > 0 && 'md:border-l md:border-neutral-300',
+            'reveal-up min-w-0 border-neutral-300',
+            index === 1 && 'border-t xs:border-t-0 xs:border-l',
+            index === 2 && 'border-t md:border-t-0 md:border-l',
+            index === 3 && 'border-t xs:border-l md:border-t-0',
           ] }
         />
       ))}

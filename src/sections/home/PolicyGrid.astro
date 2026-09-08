@@ -5,7 +5,7 @@
  * up in flat rows.
  */
 import { policies } from '@/data/home'
-import ArrowRightIcon from '@/components/icons/ArrowRightIcon.astro'
+import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
 import Button from '@/components/ui/Button.astro'
 import Container from '@/components/ui/Container.astro'
 import PolicyCard from '@/components/ui/PolicyCard.astro'
@@ -23,8 +23,8 @@ const columns = [ policies.slice( 0, 2 ), policies.slice( 2 ) ]
 const COLUMN_SPEED = [ '-0.05', '0.05' ]
 ---
 
-<section class="bg-white">
-  <Container class="flex flex-col items-stretch gap-10 py-10 md:py-20">
+<section class="stack bg-white">
+  <Container class="flex flex-col items-stretch gap-10 py-[var(--section-py)]">
     <SectionHeading
       title="Built For Your Business"
       subtitle="Grow your business faster with tailored insurance solutions. Our customizable policies adapt as you scale, simplifying coverage management so you can focus on what matters."
@@ -44,7 +44,7 @@ const COLUMN_SPEED = [ '-0.05', '0.05' ]
     </div>
 
     <div class="flex justify-center pt-4">
-      <Button href="/products" size="lg" icon={ ArrowRightIcon } class="reveal-up">See More Policies</Button>
+      <Button href="/products" size="lg" icon={ ArrowRight02Icon } class="reveal-up">See More Policies</Button>
     </div>
   </Container>
 </section>

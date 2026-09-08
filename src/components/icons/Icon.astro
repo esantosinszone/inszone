@@ -1,0 +1,61 @@
+---
+/**
+ * Renders an icon from `@hugeicons/core-free-icons`.
+ *
+ * The library ships icons as data (`[tag, attrs]` tuples) plus a React
+ * component to draw them. We draw them here instead, for two reasons:
+ *
+ *   - `<HugeiconsIcon>` takes a pixel `size` and writes it to the svg's
+ *     width/height. Several icons on this site are sized in container-query
+ *     units (the process diagram scales its bubbles with `cqw`), which a fixed
+ *     pixel size can't express. Filling the parent with `size-full` can.
+ *   - It keeps React out of the render path for what is just static markup.
+ *
+ * Usage matches the rest of the site: put it in a sized box and it fills it.
+ *   <span class="size-12"><Icon icon={ UmbrellaIcon } /></span>
+ */
+import type { HTMLAttributes } from 'astro/types'
+import type { IconSvgElement } from '@hugeicons/react'
+
+interface Props extends HTMLAttributes<'svg'> {
+  icon: IconSvgElement
+  /**
+   * Stroke weight. Defaults to 1 rather than the library's own 1.5 — the site
+   * draws its icons large, where 1.5 reads as heavy; this matches the weight
+   * the hero already uses. Pass a value to go lighter still.
+   */
+  strokeWidth?: number | string
+}
+
+const { icon, strokeWidth = 1, class: className, ...rest } = Astro.props
+
+/** The data uses React attribute names; SVG in HTML needs the kebab-case ones. */
+const toAttrName = ( key: string ): string => key.replace( /[A-Z]/g, ( c ) => `-${ c.toLowerCase() }` )
+
+const elements = icon.map(([ tag, attrs ]) => {
+  const props: Record<string, unknown> = {}
+  for ( const [ key, value ] of Object.entries( attrs )) {
+    // `key` is React bookkeeping, not an SVG attribute.
+    if ( key === 'key' ) continue
+    props[ toAttrName( key ) ] = key === 'strokeWidth' && strokeWidth !== undefined ? strokeWidth : value
+  }
+  return { tag: tag as string, props }
+})
+---
+
+<svg
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false"
+  class:list={ [ 'size-full', className ] }
+  { ...rest }
+>
+  { elements.map(({ tag, props }, index) => {
+    const Element = tag
+    // Indexed so a consumer can target one part of a glyph — the header
+    // animates just the arrow of the incoming-call icon, for instance.
+    return <Element { ...props } data-icon-part={ index } />
+  })}
+</svg>

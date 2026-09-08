@@ -1,16 +1,28 @@
 ---
 /**
  * Photo + glass panel card used by the "Built For Your Business" grid.
- * `align` decides which edge the photo hangs off; the panel always overlaps it
- * by 64px (24px on small screens) so the blur reads over the image.
+ * `align` decides which edge the photo hangs off, and the panel overlaps it so
+ * the blur reads over the image.
+ *
+ * Card, photo and panel padding all step down together on the same two
+ * boundaries the rest of the page uses — `xl` (1280) and `md` (768) — because
+ * the grid keeps two columns the whole way down: the card narrows continuously
+ * while the photo would otherwise stay at its desktop size and crowd the text
+ * out. Ratios are kept, not just sizes: 300x340 / 40px of padding at xl,
+ * 256x290 / 32px at md, 140x159 / 16px below that.
  */
-import ArrowRightSmallIcon from '@/components/icons/ArrowRightSmallIcon.astro'
+import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
+import Icon from '@/components/icons/Icon.astro'
 import Typography from '@/components/ui/Typography.astro'
 
 interface Props {
   title: string
   body: string
+  /** Shown in place of `body` below `xl`; falls back to `body`. */
+  bodyShort?: string
   linkLabel: string
+  /** Shown in place of `linkLabel` below `xl`. */
+  linkLabelShort?: string
   href: string
   image: string
   imageAlt: string
@@ -21,7 +33,9 @@ interface Props {
 const {
   title,
   body,
+  bodyShort = body,
   linkLabel,
+  linkLabelShort = 'Read more',
   href,
   image,
   imageAlt,
@@ -32,7 +46,7 @@ const {
 
 <article
   class:list={ [
-    'group relative flex w-full max-w-[640px] min-h-40 items-end rounded-2xl bg-primary-100 md:h-[312px] md:rounded-3xl',
+    'group relative flex w-full max-w-[640px] min-h-40 items-end rounded-2xl bg-primary-100 md:h-[264px] md:rounded-3xl xl:h-[312px]',
     align === 'right' && 'flex-row-reverse',
     className,
   ] }
@@ -42,8 +56,8 @@ const {
     alt={ imageAlt }
     loading="lazy"
     class:list={ [
-      'relative z-1 h-[159px] w-[140px] shrink-0 self-end object-cover transition-transform duration-300 group-hover:scale-[1.03] md:h-[340px] md:w-[300px]',
-      align === 'left' ? '-mr-6 rounded-bl-3xl md:-mr-16' : '-ml-6 rounded-br-3xl md:-ml-16',
+      'relative z-1 h-[159px] w-[140px] shrink-0 self-end object-cover transition-transform duration-300 group-hover:scale-[1.03] md:h-[290px] md:w-[256px] xl:h-[340px] xl:w-[300px]',
+      align === 'left' ? '-mr-6 rounded-bl-3xl md:-mr-14 xl:-mr-16' : '-ml-6 rounded-br-3xl md:-ml-14 xl:-ml-16',
       // Grow upward and inward only. Scaling from the default centre origin
       // pushes the figure out through the card's base, and the card has no
       // overflow clipping — anchoring the origin to the bottom outer corner
@@ -52,23 +66,28 @@ const {
     ] }
   />
   <div
-    class="relative z-2 flex min-w-0 flex-1 flex-col justify-end gap-4 self-end rounded-2xl bg-white/60 p-5 backdrop-blur-lg md:self-auto md:rounded-3xl md:p-10"
+    class="relative z-2 flex min-w-0 flex-1 flex-col justify-end gap-4 self-end rounded-2xl bg-white/60 p-4 backdrop-blur-lg md:self-auto md:rounded-3xl md:p-8 xl:p-10"
   >
     <div class="flex flex-col gap-2">
-      <Typography variant="inherit" as="h3" class="text-[clamp(12px,3.6vw,18px)] leading-tight font-bold text-primary-500 md:text-2xl md:leading-none">
+      <Typography variant="inherit" as="h3" class="text-[clamp(12px,3.6vw,18px)] leading-tight font-bold text-primary-500 xl:text-2xl xl:leading-none">
         { title }
       </Typography>
-      <Typography variant="inherit" as="p" class="text-[clamp(10px,2.4vw,12px)] leading-[1.24] text-neutral-600 md:text-sm md:leading-[1.4]">
-        { body }
+      <!-- Both strings ship, and CSS picks one: swapping in JS would leave the
+           card empty until hydration, and re-rendering on resize would fight the
+           reveal animation. -->
+      <Typography variant="inherit" as="p" class="text-[clamp(10px,2.4vw,12px)] leading-[1.24] text-neutral-600 xl:text-sm xl:leading-[1.4]">
+        <span class="xl:hidden">{ bodyShort }</span>
+        <span class="hidden xl:inline">{ body }</span>
       </Typography>
     </div>
     <a
       href={ href }
-      class="inline-flex items-center gap-2 self-end text-xs leading-none font-semibold text-primary-950 no-underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 md:self-start md:text-sm"
+      class="inline-flex items-center gap-2 self-end text-xs leading-none font-semibold text-primary-950 no-underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500 md:self-start xl:text-sm"
     >
-      { linkLabel }
+      <span class="xl:hidden">{ linkLabelShort }</span>
+      <span class="hidden xl:inline">{ linkLabel }</span>
       <span class="inline-flex size-3.5 transition-transform duration-250 group-hover:translate-x-1">
-        <ArrowRightSmallIcon />
+        <Icon icon={ ArrowRight02Icon } />
       </span>
     </a>
   </div>

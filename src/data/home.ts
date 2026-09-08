@@ -2,19 +2,20 @@
  * Home page content. Kept out of the templates so copy edits never touch
  * markup, and so the same shapes can later be fed from a CMS.
  */
-import type { AstroComponent } from '@/types'
+import type { IconSvgElement } from '@hugeicons/react'
 
-import FileSecurityIcon from '@/components/icons/FileSecurityIcon.astro'
-import BalanceScaleIcon from '@/components/icons/BalanceScaleIcon.astro'
-import ShieldUserIcon from '@/components/icons/ShieldUserIcon.astro'
-import Agreement02Icon from '@/components/icons/Agreement02Icon.astro'
-import UmbrellaIcon from '@/components/icons/UmbrellaIcon.astro'
-import PiggyBankIcon from '@/components/icons/PiggyBankIcon.astro'
-import TaskDone01Icon from '@/components/icons/TaskDone01Icon.astro'
-import Navigation03Icon from '@/components/icons/Navigation03Icon.astro'
-import Location05Icon from '@/components/icons/Location05Icon.astro'
-import UserGroup03Icon from '@/components/icons/UserGroup03Icon.astro'
-import HandshakeIcon from '@/components/icons/HandshakeIcon.astro'
+import {
+  FileSecurityIcon,
+  JusticeScale01Icon,
+  ShieldUserIcon,
+  Agreement02Icon,
+  UmbrellaIcon,
+  PiggyBankIcon,
+  TaskDone01Icon,
+  Navigation03Icon,
+  Location05Icon,
+  UserGroup03Icon,
+} from '@hugeicons/core-free-icons'
 
 export interface Carrier {
   name: string
@@ -34,7 +35,7 @@ export const carriers: Carrier[] = [
 export interface ProcessStep {
   title: string
   description: string
-  icon: AstroComponent
+  icon: IconSvgElement
 }
 
 export const processSteps: ProcessStep[] = [
@@ -48,7 +49,7 @@ export const processSteps: ProcessStep[] = [
     title: 'We compare, you choose with confidence.',
     description:
       'Our experts shop top insurance carriers to bring you the most competitive policies and bundles.',
-    icon: BalanceScaleIcon,
+    icon: JusticeScale01Icon,
   },
   {
     title: 'More savings, stronger protection',
@@ -124,7 +125,7 @@ export const reviews: Review[] = [
 export interface Feature {
   label: string
   caption: string
-  icon: AstroComponent
+  icon: IconSvgElement
 }
 
 export const features: Feature[] = [
@@ -148,6 +149,12 @@ export const features: Feature[] = [
 export interface Policy {
   title: string
   body: string
+  /**
+   * Trimmed body copy for the card below `xl`, where it sits in a narrow
+   * column. Not a truncation of `body` — the sentence is rewritten so it still
+   * ends properly instead of running into an ellipsis.
+   */
+  bodyShort: string
   linkLabel: string
   href: string
   image: string
@@ -160,6 +167,7 @@ export const policies: Policy[] = [
   {
     title: 'Contractors Insurance',
     body: 'Tailored protection for contractors and trades. Covers jobsite accidents, equipment damage, and liability risks.',
+    bodyShort: 'Tailored coverage for contractors. Protects against accidents and liability.',
     linkLabel: 'Explore Contractor Coverage Plans',
     href: '/industries/contractors',
     image: '/images/policies/contractors.png',
@@ -169,6 +177,7 @@ export const policies: Policy[] = [
   {
     title: 'Healthcare Liability',
     body: 'Insurance that protects healthcare professionals from malpractice claims, liability risks, and unexpected issues.',
+    bodyShort: 'Insurance that protects healthcare professionals from malpractice and liability.',
     linkLabel: 'Explore Healthcare Coverage Options',
     href: '/industries/healthcare-services',
     image: '/images/policies/healthcare.png',
@@ -178,6 +187,7 @@ export const policies: Policy[] = [
   {
     title: 'Commercial Property',
     body: 'Protect your buildings, equipment, and business assets from unexpected events, costly damages, or interruptions.',
+    bodyShort: 'Protect your buildings, equipment, and assets from damage or interruptions.',
     linkLabel: 'Protect Your Property Today',
     href: '/industries/commercial-property',
     image: '/images/policies/commercial-property.png',
@@ -187,6 +197,7 @@ export const policies: Policy[] = [
   {
     title: 'Architects and Engineers',
     body: 'Specialized coverage for architects and engineers against design errors, project risks, and professional liability.',
+    bodyShort: 'Coverage for architects and engineers against design errors and project risks.',
     linkLabel: 'Discover A&E Protection Plans',
     href: '/industries/professional-services',
     image: '/images/policies/architects-engineers.png',
@@ -198,14 +209,14 @@ export const policies: Policy[] = [
 export interface Stat {
   value: string
   label: string
-  icon: AstroComponent
+  icon: IconSvgElement
 }
 
 export const stats: Stat[] = [
   { value: '22', label: 'States', icon: Navigation03Icon },
   { value: '113', label: 'Locations', icon: Location05Icon },
   { value: '1,139', label: 'Team Members', icon: UserGroup03Icon },
-  { value: '174', label: 'Agencies', icon: HandshakeIcon },
+  { value: '174', label: 'Agencies', icon: Agreement02Icon },
 ]
 
 export interface FaqItem {

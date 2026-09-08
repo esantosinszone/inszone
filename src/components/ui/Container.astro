@@ -1,26 +1,54 @@
 ---
 /**
- * The page gutter. Every section that should line up with the header logo and
- * the hero wraps its content in this — 1320px of content, edge to edge, with
- * an 8-unit gutter until the viewport is wide enough not to need one.
+ * The page gutter — the single place side spacing is defined.
+ *
+ * Every section goes through this, so the left and right whitespace is
+ * identical everywhere at any viewport; the only thing a section chooses is how
+ * wide its content may grow. The gutter itself comes from `--section-pad`,
+ * the one padding value the whole page shares on all four sides.
+ *
+ * If a section needs to bleed to the edge it should say so explicitly rather
+ * than skipping the container — that way the exception is visible.
  */
 import type { HTMLAttributes } from 'astro/types'
 import type { HTMLTag } from 'astro/types'
 
 interface Props extends HTMLAttributes<'div'> {
   as?: HTMLTag
-  /** Drop to a narrower measure for text-led sections (FAQ, headings). */
-  width?: 'full' | 'narrow'
+  /**
+   * `narrow` is a text measure (FAQ), `base` is the page column that the header
+   * and hero align to, `wide` is for the full tinted panels.
+   */
+  width?: 'narrow' | 'base' | 'wide'
+  /**
+   * Drop the side gutter below md, for the sections whose tinted panel is the
+   * full-bleed slab itself — the panel then supplies the inner padding.
+   */
+  flush?: boolean
 }
 
-const { as: Tag = 'div', width = 'full', class: className, ...rest } = Astro.props
+const { as: Tag = 'div', width = 'base', flush = false, class: className, ...rest } = Astro.props
 
+/**
+ * The max-width carries the gutter on top of the design width, so the CONTENT
+ * column is exactly 1020 / 1320 / 1480 rather than that minus the padding —
+ * which is how the staging build sizes its own wide band.
+ */
 const WIDTH = {
-  full: 'max-w-8xl',
-  narrow: 'max-w-[1020px]',
+  narrow: 'max-w-[calc(1020px+2*var(--section-pad))]',
+  base: 'max-w-[calc(var(--container-8xl)+2*var(--section-pad))]',
+  wide: 'max-w-[calc(1480px+2*var(--section-pad))]',
 }
 ---
 
-<Tag class:list={ [ 'mx-auto w-full px-8 2xl:px-0', WIDTH[ width ], className ] } { ...rest }>
+<Tag
+  class:list={ [
+    'mx-auto w-full',
+    flush ? 'px-0 md:px-[var(--section-pad)]' : 'px-[var(--section-pad)]',
+    WIDTH[ width ],
+    className,
+  ] }
+  { ...rest }
+>
   <slot />
 </Tag>

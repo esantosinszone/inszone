@@ -8,7 +8,8 @@
  * one collapses whichever was open. Both are progressive: without the script
  * the panel still toggles, it just snaps.
  */
-import ChevronCircleIcon from '@/components/icons/ChevronCircleIcon.astro'
+import { CircleArrowDown01Icon } from '@hugeicons/core-free-icons'
+import Icon from '@/components/icons/Icon.astro'
 import Typography from '@/components/ui/Typography.astro'
 
 interface Props {
@@ -42,7 +43,7 @@ const { title, open = false, group, class: className } = Astro.props
       class="inline-flex size-10 shrink-0 text-primary-500 transition-transform duration-200 group-open:rotate-180"
       aria-hidden="true"
     >
-      <ChevronCircleIcon />
+      <Icon icon={ CircleArrowDown01Icon } strokeWidth={ 0.7 } />
     </span>
   </summary>
   <div

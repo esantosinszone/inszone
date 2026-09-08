@@ -1,0 +1,356 @@
+---
+/**
+ * Full-screen mobile navigation.
+ *
+ * Three layers, all present in the DOM from the start so nothing has to be
+ * built on open:
+ *
+ *   1. the backdrop,
+ *   2. the root sheet — the four top-level entries — which rises from the
+ *      bottom of the screen,
+ *   3. one panel per drill-down section, each of which comes in from the right
+ *      and leaves the same way, the way a native stack navigator behaves.
+ *
+ * Movement is the point here: the staging build swaps these panels with no
+ * transition at all, which reads as a page load rather than as navigation.
+ * Everything moves on the project curve, cubic-bezier(0.32, 0.72, 0, 1) —
+ * exposed as `--ease-app` — and only `transform` and `opacity` animate, so the
+ * whole thing stays on the compositor.
+ *
+ * Note on content: the link sets come from the staging build as it ships today.
+ * Its Resources section has only Blog and Employee Navigator, and its About
+ * section has no Community & Employee Spotlights — the newer designs show more.
+ * The extra entries are in `nav.ts` with the URLs they most likely take;
+ * confirm those before this goes live.
+ */
+import { ArrowLeft02Icon, ArrowRight02Icon, Cancel01Icon } from '@hugeicons/core-free-icons'
+import Icon from '@/components/icons/Icon.astro'
+import { mainNav, navSections } from '@/data/nav'
+
+const CTA =
+  'gradient-inszone flex h-14 w-full items-center justify-between gap-4 rounded-lg px-6 text-base leading-none font-semibold text-white no-underline'
+const CHIP =
+  'inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full border-none'
+---
+
+<div id="mobile-nav" class="fixed inset-0 z-70 xl:hidden" hidden>
+  <div data-nav-backdrop class="absolute inset-0 bg-primary-950/40"></div>
+
+  <!-- Root sheet: the four top-level entries, centred, with the quote CTA
+       anchored to the bottom edge. -->
+  <div data-nav-sheet class="absolute inset-0 flex flex-col bg-white">
+    <div class="flex justify-end p-4">
+      <button
+        type="button"
+        data-nav-close
+        aria-label="Close menu"
+        class:list={ [ CHIP, 'bg-primary-100 text-primary-950' ] }
+      >
+        <span class="inline-flex size-5"><Icon icon={ Cancel01Icon } strokeWidth={ 2 } /></span>
+      </button>
+    </div>
+
+    <nav class="flex flex-1 flex-col items-stretch justify-center gap-2 px-6">
+      { mainNav.map(({ label, href, section }) => (
+        section ? (
+          <button
+            type="button"
+            data-nav-open={ section }
+            class="cursor-pointer rounded-xl border-none bg-transparent px-6 py-4 text-center text-2xl leading-none font-bold text-neutral-500 transition-colors hover:bg-primary-100 hover:text-primary-950"
+          >
+            { label }
+          </button>
+        ) : (
+          <a
+            href={ href }
+            class="rounded-xl px-6 py-4 text-center text-2xl leading-none font-bold text-neutral-500 no-underline transition-colors hover:bg-primary-100 hover:text-primary-950"
+          >
+            { label }
+          </a>
+        )
+      ))}
+    </nav>
+
+    <div class="p-6">
+      <a href="/quote" class={ CTA }>
+        Request a quote
+        <span class="inline-flex size-5"><Icon icon={ ArrowRight02Icon } /></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- One panel per section, stacked over the sheet. -->
+  { navSections.map(( section ) => (
+    <section data-nav-section={ section.key } class="absolute inset-0 flex flex-col bg-white" hidden>
+      <header class="flex shrink-0 items-center justify-between gap-3 border-b border-neutral-200 px-4 py-3">
+        <button
+          type="button"
+          data-nav-back
+          class="flex cursor-pointer items-center gap-3 border-none bg-transparent p-0 text-base leading-none font-bold text-primary-950"
+        >
+          <span class:list={ [ CHIP, 'bg-neutral-700 text-white' ] }>
+            <span class="inline-flex size-4"><Icon icon={ ArrowLeft02Icon } strokeWidth={ 2 } /></span>
+          </span>
+          { section.label }
+        </button>
+        <button
+          type="button"
+          data-nav-close
+          aria-label="Close menu"
+          class:list={ [ CHIP, 'bg-primary-100 text-primary-950' ] }
+        >
+          <span class="inline-flex size-5"><Icon icon={ Cancel01Icon } strokeWidth={ 2 } /></span>
+        </button>
+      </header>
+
+      <div class="flex-1 overflow-y-auto overscroll-contain">
+        { section.tabs && (
+          <Fragment>
+            <div role="tablist" aria-label={ section.label } class="grid grid-cols-3 border-b border-neutral-200">
+              { section.tabs.map(( tab, index ) => (
+                <button
+                  type="button"
+                  role="tab"
+                  data-nav-tab={ tab.key }
+                  aria-selected={ index === 0 ? 'true' : 'false' }
+                  class="flex cursor-pointer flex-col items-center gap-2 border-none bg-transparent px-2 py-4 text-xs leading-none font-bold tracking-[0.08em] text-neutral-400 uppercase transition-colors aria-selected:bg-primary-50 aria-selected:text-primary-950"
+                >
+                  <span class="inline-flex size-6"><Icon icon={ tab.icon } /></span>
+                  { tab.label }
+                </button>
+              ))}
+            </div>
+
+            { section.tabs.map(( tab, index ) => (
+              <div data-nav-tab-panel={ tab.key } class="grid grid-cols-2 gap-x-4 gap-y-6 p-4" hidden={ index !== 0 }>
+                { tab.groups.map(( group ) => (
+                  <div class="flex min-w-0 flex-col gap-2">
+                    <p class="m-0 flex items-center gap-2 text-base leading-tight font-bold text-primary-950">
+                      <span class="inline-flex size-5 shrink-0"><Icon icon={ group.icon } /></span>
+                      { group.title }
+                    </p>
+                    { group.links.map(({ label, href }) => (
+                      <a href={ href } class="text-sm leading-[1.5] text-neutral-600 no-underline hover:text-primary-700">
+                        { label }
+                      </a>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </Fragment>
+        )}
+
+        { section.feature && (
+          <div class="flex flex-col gap-3 border-b border-neutral-200 p-4">
+            <a href={ section.feature.href } class="flex items-center gap-2 text-base leading-tight font-bold text-primary-950 no-underline">
+              <span class="inline-flex size-5 shrink-0"><Icon icon={ section.feature.icon } /></span>
+              { section.feature.label }
+              <span class="ml-auto inline-flex size-5 shrink-0 text-primary-700"><Icon icon={ ArrowRight02Icon } /></span>
+            </a>
+            <p class="m-0 text-sm leading-[1.4] text-neutral-600">{ section.feature.description }</p>
+          </div>
+        )}
+
+        { section.cards && (
+          <div class="grid grid-cols-2 gap-x-4 gap-y-6 p-4">
+            { section.cards.map(( card ) => (
+              <a href={ card.href } class="flex min-w-0 flex-col gap-1 no-underline">
+                <span class="flex items-start gap-2 text-base leading-tight font-bold text-primary-950">
+                  <span class="inline-flex size-5 shrink-0"><Icon icon={ card.icon } /></span>
+                  { card.label }
+                </span>
+                <span class="text-sm leading-[1.4] text-neutral-600">{ card.description }</span>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div class="shrink-0 p-4">
+        <a href={ section.cta.href } class={ CTA }>
+          { section.cta.label }
+          <span class="inline-flex size-5"><Icon icon={ ArrowRight02Icon } /></span>
+        </a>
+      </div>
+    </section>
+  ))}
+</div>
+
+<style>
+  /* The sheet rises from the bottom; the section panels come in from the right
+     and leave the same way. Only transform and opacity move. */
+  [data-nav-sheet] {
+    transform: translateY(100%);
+    transition: transform 0.42s var(--ease-app);
+    will-change: transform;
+  }
+
+  [data-nav-backdrop] {
+    opacity: 0;
+    transition: opacity 0.42s var(--ease-app);
+  }
+
+  #mobile-nav[data-open] [data-nav-sheet] {
+    transform: translateY(0);
+  }
+
+  #mobile-nav[data-open] [data-nav-backdrop] {
+    opacity: 1;
+  }
+
+  [data-nav-section] {
+    z-index: 1;
+    transform: translateX(100%);
+    transition: transform 0.34s var(--ease-app);
+    will-change: transform;
+  }
+
+  [data-nav-section][data-open] {
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-nav-sheet],
+    [data-nav-backdrop],
+    [data-nav-section] {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const OPEN_ATTR = 'data-open'
+
+  const initMobileNav = (): void => {
+    const root = document.getElementById( 'mobile-nav' )
+    if ( !root || root.dataset.navBound ) return
+    root.dataset.navBound = '1'
+
+    const sheet = root.querySelector<HTMLElement>( '[data-nav-sheet]' )
+    const sections = Array.from( root.querySelectorAll<HTMLElement>( '[data-nav-section]' ))
+    const toggles = Array.from( document.querySelectorAll<HTMLElement>( '[data-nav-toggle]' ))
+    if ( !sheet ) return
+
+    let openSection: HTMLElement | null = null
+
+    /** A hidden element can't transition: the browser has to have resolved its
+        start position before the open state is set, or it jumps straight to the
+        end. Reading `offsetWidth` forces that synchronously — rather than
+        waiting a frame, which never arrives in a background tab and would leave
+        the menu stuck shut. */
+    const reveal = ( element: HTMLElement, open: () => void ): void => {
+      element.hidden = false
+      void element.offsetWidth
+      open()
+    }
+
+    /** Waits for the panel to finish sliding out before hiding it again, so the
+        exit is visible; falls back to a timer if the transition never fires. */
+    const conceal = ( element: HTMLElement ): void => {
+      let done = false
+      const finish = (): void => {
+        if ( done ) return
+        done = true
+        element.hidden = true
+        element.removeEventListener( 'transitionend', onEnd )
+      }
+      const onEnd = ( event: TransitionEvent ): void => {
+        if ( event.target === element && event.propertyName === 'transform' ) finish()
+      }
+      element.addEventListener( 'transitionend', onEnd )
+      window.setTimeout( finish, 500 )
+    }
+
+    const lockScroll = ( locked: boolean ): void => {
+      document.documentElement.style.overflow = locked ? 'hidden' : ''
+      document.body.style.overflow = locked ? 'hidden' : ''
+    }
+
+    const closeSection = (): void => {
+      if ( !openSection ) return
+      const section = openSection
+      openSection = null
+      section.removeAttribute( OPEN_ATTR )
+      conceal( section )
+    }
+
+    const open = (): void => {
+      reveal( root, () => root.setAttribute( OPEN_ATTR, '' ))
+      lockScroll( true )
+      toggles.forEach(( toggle ) => toggle.setAttribute( 'aria-expanded', 'true' ))
+    }
+
+    const close = (): void => {
+      closeSection()
+      root.removeAttribute( OPEN_ATTR )
+      conceal( root )
+      lockScroll( false )
+      toggles.forEach(( toggle ) => toggle.setAttribute( 'aria-expanded', 'false' ))
+    }
+
+    const drill = ( key: string ): void => {
+      const section = sections.find(( item ) => item.dataset.navSection === key )
+      if ( !section ) return
+      openSection = section
+      reveal( section, () => section.setAttribute( OPEN_ATTR, '' ))
+    }
+
+    toggles.forEach(( toggle ) => {
+      toggle.addEventListener( 'click', () => {
+        if ( root.hasAttribute( OPEN_ATTR )) close()
+        else open()
+      })
+    })
+
+    root.addEventListener( 'click', ( event ) => {
+      const target = event.target as HTMLElement
+
+      if ( target.closest( '[data-nav-close]' ) || target.closest( '[data-nav-backdrop]' )) {
+        close()
+        return
+      }
+
+      if ( target.closest( '[data-nav-back]' )) {
+        closeSection()
+        return
+      }
+
+      const drillButton = target.closest<HTMLElement>( '[data-nav-open]' )
+      if ( drillButton?.dataset.navOpen ) {
+        drill( drillButton.dataset.navOpen )
+        return
+      }
+
+      // Insurance tabs: sibling panels inside the same section.
+      const tab = target.closest<HTMLElement>( '[data-nav-tab]' )
+      if ( tab?.dataset.navTab ) {
+        const section = tab.closest<HTMLElement>( '[data-nav-section]' )
+        section?.querySelectorAll<HTMLElement>( '[data-nav-tab]' ).forEach(( item ) => {
+          item.setAttribute( 'aria-selected', String( item === tab ))
+        })
+        section?.querySelectorAll<HTMLElement>( '[data-nav-tab-panel]' ).forEach(( panel ) => {
+          panel.hidden = panel.dataset.navTabPanel !== tab.dataset.navTab
+        })
+        return
+      }
+
+      // Following a link should leave the menu closed behind the new page.
+      if ( target.closest( 'a[href]' )) close()
+    })
+
+    // Escape unwinds one level at a time, like the back arrow.
+    document.addEventListener( 'keydown', ( event ) => {
+      if ( event.key !== 'Escape' || !root.hasAttribute( OPEN_ATTR )) return
+      if ( openSection ) closeSection()
+      else close()
+    })
+
+    // The menu only exists below xl; growing past it would strand it open.
+    window.matchMedia( '(width >= 1280px)' ).addEventListener( 'change', ( event ) => {
+      if ( event.matches && root.hasAttribute( OPEN_ATTR )) close()
+    })
+  }
+
+  document.addEventListener( 'astro:page-load', initMobileNav )
+</script>

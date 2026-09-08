@@ -1,14 +1,19 @@
 ---
 /** Tinted panel with the carrier logos scrolling on an infinite marquee. */
 import { carriers } from '@/data/home'
+import Container from '@/components/ui/Container.astro'
 import Marquee from '@/components/ui/Marquee.astro'
 import Typography from '@/components/ui/Typography.astro'
 ---
 
-<section class="-mt-52 relative reveal-fade">
-  <div
-    class="mx-auto flex max-w-[1480px] flex-col items-center gap-6 rounded-3xl bg-primary-50 px-4 py-10 md:gap-10 md:px-6 md:pt-44 md:pb-20"
-  >
+<!-- The pull-up only exists where there's a hero photo to tuck under (xl+).
+     Below that the hero is just its panel, so the strip sits in normal flow —
+     otherwise it would ride 208px up over the copy. -->
+<section class="stack relative reveal-fade max-md:bg-primary-50 xl:-mt-52">
+  <Container width="wide" flush>
+    <!-- xl:pt-44 clears the hero photo that overlaps into this panel via the
+         section's -mt-52; it is not section rhythm. -->
+    <div class="flex flex-col items-center gap-6 rounded-3xl bg-primary-50 px-[var(--section-pad)] py-[var(--section-py)] max-md:rounded-none max-md:bg-transparent md:gap-10 xl:pt-44">
     <div class="flex max-w-[1020px] flex-col gap-3 text-center">
       <Typography variant="h2">The Best Insurance Companies For You</Typography>
       <Typography variant="body">
@@ -35,5 +40,6 @@ import Typography from '@/components/ui/Typography.astro'
         </span>
       ))}
     </Marquee>
-  </div>
+    </div>
+  </Container>
 </section>

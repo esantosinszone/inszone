@@ -1,6 +1,7 @@
 ---
 /** Blog slide: full-bleed photo with a frosted panel pinned to the bottom. */
-import ArrowRightSmallIcon from '@/components/icons/ArrowRightSmallIcon.astro'
+import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
+import Icon from '@/components/icons/Icon.astro'
 import Typography from '@/components/ui/Typography.astro'
 
 interface Props {
@@ -21,7 +22,7 @@ const { title, href, image, imageAlt, date, author, readingTime, class: classNam
   href={ href }
   role="listitem"
   class:list={ [
-    'reveal-up group relative block h-60 w-[calc(50%-6px)] shrink-0 overflow-hidden rounded-lg no-underline md:h-[413px] md:w-[min(413px,85vw)] md:rounded-2xl',
+    'reveal-up group relative block h-60 w-[calc(50%-6px)] shrink-0 overflow-hidden rounded-lg no-underline md:h-[380px] md:w-[calc((100%-2.5rem)/2)] md:rounded-2xl xl:h-[413px] xl:w-[calc((100%-5rem)/3)]',
     'after:pointer-events-none after:absolute after:inset-0 after:bg-linear-to-b after:from-transparent after:from-39% after:to-black/64',
     className,
   ] }
@@ -48,11 +49,15 @@ const { title, href, image, imageAlt, date, author, readingTime, class: classNam
         </span>
       </div>
       <div class="w-full min-w-0 flex-1 md:px-6 md:py-4">
+        <!-- Two lines, then an ellipsis. The height cap that used to sit here
+             fought the clamp — 3 lines of leading-tight is 3.75em against a
+             3.3em cap, so the third line was sliced through the middle instead
+             of being replaced by an ellipsis. The clamp alone bounds the height. -->
         <Typography
           variant="inherit"
           as="p"
-          clamp={ 3 }
-          class="max-h-[3.3em] text-sm leading-tight font-bold text-white md:text-2xl md:leading-[1.1]"
+          clamp={ 2 }
+          class="text-sm leading-tight font-bold text-white md:text-2xl md:leading-[1.1]"
         >
           { title }
         </Typography>
@@ -66,7 +71,7 @@ const { title, href, image, imageAlt, date, author, readingTime, class: classNam
       <span class="inline-flex shrink-0 items-center gap-2 p-2 text-sm leading-none font-semibold whitespace-nowrap text-primary-300 md:p-3 md:text-base">
         Read more
         <span class="inline-flex size-4 transition-transform duration-250 group-hover:translate-x-1">
-          <ArrowRightSmallIcon />
+          <Icon icon={ ArrowRight02Icon } />
         </span>
       </span>
     </div>

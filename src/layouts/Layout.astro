@@ -36,17 +36,47 @@ const { title, description, image } = Astro.props
 
   let locomotiveScroll: ScrollInstance | null = null
 
-  const initScroll = (): void => {
-    if ( locomotiveScroll ) {
-      locomotiveScroll.destroy()
-    }
+  /**
+   * Parallax is a desktop-only flourish: it runs from `xl` up. Below that the
+   * columns it offsets are already stacked or narrow, so the drift reads as
+   * misalignment rather than depth — and it costs a transform on every frame on
+   * exactly the devices least able to spare one.
+   */
+  const parallaxQuery = window.matchMedia( '(width >= 1280px)' )
 
-    window.scrollTo(0, 0)
+  /**
+   * Locomotive only parallaxes elements that carry `data-scroll-speed`, and it
+   * reads them once at construction. So the switch is the attribute itself:
+   * park the value in `data-parallax-speed` while off, put it back when on, and
+   * rebuild the instance. Any inline `transform` Locomotive already wrote has to
+   * be cleared by hand — it doesn't unwind it on destroy.
+   */
+  const applyParallaxState = (): void => {
+    const enabled = parallaxQuery.matches
 
-    initReveal()
-    initCarousels()
-    void initCounters()
-    initAccordions()
+    document
+      .querySelectorAll<HTMLElement>( '[data-scroll-speed], [data-parallax-speed]' )
+      .forEach(( element ) => {
+        if ( enabled ) {
+          const parked = element.dataset.parallaxSpeed
+          if ( parked === undefined ) return
+          element.setAttribute( 'data-scroll-speed', parked )
+          delete element.dataset.parallaxSpeed
+          return
+        }
+
+        const speed = element.getAttribute( 'data-scroll-speed' )
+        if ( speed !== null ) {
+          element.dataset.parallaxSpeed = speed
+          element.removeAttribute( 'data-scroll-speed' )
+        }
+        element.style.transform = ''
+      })
+  }
+
+  const createLocomotive = (): void => {
+    locomotiveScroll?.destroy()
+    applyParallaxState()
 
     // v5 is a different library from v4: it's built on Lenis and takes
     // `lenisOptions` / `triggerRootMargin` / `autoStart`. The old v4 keys
@@ -54,6 +84,21 @@ const { title, description, image } = Astro.props
     // silently. Smooth wheel and touch handling are v5 defaults.
     locomotiveScroll = new LocomotiveScroll()
   }
+
+  const initScroll = (): void => {
+    window.scrollTo(0, 0)
+
+    initReveal()
+    initCarousels()
+    void initCounters()
+    initAccordions()
+
+    createLocomotive()
+  }
+
+  // Crossing the boundary only needs the scroll instance rebuilt — rerunning
+  // `initScroll` would jump the page to the top and replay every reveal.
+  parallaxQuery.addEventListener( 'change', createLocomotive )
 
   document.addEventListener("astro:page-load", () => {
     initScroll()

@@ -21,7 +21,8 @@
  * property, so they never share an element — each block is an outer parallax
  * host wrapping an inner reveal.
  */
-import ArrowRightIcon from '@/components/icons/ArrowRightIcon.astro'
+import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
+import Container from '@/components/ui/Container.astro'
 import Button from '@/components/ui/Button.astro'
 import Typography from '@/components/ui/Typography.astro'
 
@@ -29,54 +30,59 @@ const CARD_SPEED = '0.04'
 const MEDIA_SPEED = '-0.04'
 ---
 
-<section class="relative z-2 bg-white md:mt-10 md:px-6 xl:mt-20">
-  <div class="relative mx-auto flex max-w-8xl flex-col xl:block xl:h-[542px]">
-    <!-- Opaque backing for the card; only exists on the overlapping desktop layout. -->
-    <span
-      aria-hidden="true"
-      data-scroll
-      data-scroll-speed={ CARD_SPEED }
-      class="absolute top-16 left-0 z-1 hidden h-[478px] w-[62%] max-w-[820px] rounded-3xl bg-primary-700 xl:block"
-    >
-    </span>
-
-    <div
-      data-scroll
-      data-scroll-speed={ CARD_SPEED }
-      class="relative -top-6 z-4 w-full xl:absolute xl:top-16 xl:left-0 xl:h-[478px] xl:w-[62%] xl:max-w-[820px]"
-    >
-      <div
-        class="reveal-up flex h-full w-full flex-col justify-center gap-8 rounded-t-3xl bg-primary-700 px-6 pt-8 pb-15 xl:rounded-3xl xl:bg-primary-800/80 xl:p-20 xl:backdrop-blur-[14px]"
+<section class="stack relative z-2 bg-white max-md:bg-primary-700">
+  <Container flush class="py-[var(--section-py)] max-md:py-0">
+    <!-- This wrapper is the positioning context, NOT the Container: absolute
+         children resolve their offsets against the padding box, so pinning them
+         to the Container itself lands them outside its side gutter. -->
+    <div class="relative flex flex-col xl:block xl:h-[542px]">
+      <!-- Opaque backing for the card; only exists on the overlapping desktop layout. -->
+      <span
+        aria-hidden="true"
+        data-scroll
+        data-scroll-speed={ CARD_SPEED }
+        class="absolute top-16 left-0 z-1 hidden h-[478px] w-[62%] max-w-[820px] rounded-3xl bg-primary-700 xl:block"
       >
-        <Typography variant="inherit" as="h2" color="white" class="text-2xl leading-[1.1] font-extrabold md:text-[28px] xl:text-[40px]">
-          Pay less, be truly protected.
-        </Typography>
-        <Typography variant="inherit" as="p" color="rgba(255,255,255,0.9)" class="max-w-[660px] text-sm leading-[1.3] md:text-base md:leading-[1.4] xl:text-lg xl:leading-[1.2]">
-          Many insurers promise quick savings, but often by cutting coverage to the bare minimum
-          leaving you vulnerable when it matters most. At Inszone Insurance, our expert agents take
-          the time to understand your needs, explain your options clearly, and shop top-rated
-          carriers to secure the right protection at the right price.
-        </Typography>
-        <div class="flex flex-wrap gap-6">
-          <Button href="/quote" variant="white" size="lg" icon={ ArrowRightIcon }>Start My Quote</Button>
-          <Button href="/about-us" variant="navy" size="lg" icon={ ArrowRightIcon }>Learn About Inszone</Button>
+      </span>
+
+      <div
+        data-scroll
+        data-scroll-speed={ CARD_SPEED }
+        class="relative -top-6 z-4 w-full max-md:top-0 max-md:-mt-6 xl:absolute xl:top-16 xl:left-0 xl:h-[478px] xl:w-[62%] xl:max-w-[820px]"
+      >
+        <div
+          class="reveal-up flex h-full w-full flex-col justify-center gap-8 rounded-3xl bg-primary-700 p-[var(--section-pad)] max-md:rounded-b-none xl:p-20 xl:bg-primary-800/80 xl:backdrop-blur-[14px]"
+        >
+          <Typography variant="inherit" as="h2" color="white" class="text-2xl leading-[1.1] font-extrabold md:text-[28px] xl:text-[40px]">
+            Pay less, be truly protected.
+          </Typography>
+          <Typography variant="inherit" as="p" color="rgba(255,255,255,0.9)" class="text-sm leading-[1.3] md:text-base md:leading-[1.4] xl:max-w-[660px] xl:text-lg xl:leading-[1.2]">
+            Many insurers promise quick savings, but often by cutting coverage to the bare minimum
+            leaving you vulnerable when it matters most. At Inszone Insurance, our expert agents take
+            the time to understand your needs, explain your options clearly, and shop top-rated
+            carriers to secure the right protection at the right price.
+          </Typography>
+          <div class="flex flex-wrap gap-6">
+            <Button href="/quote" variant="white" size="lg" icon={ ArrowRight02Icon }>Start My Quote</Button>
+            <Button href="/about-us" variant="navy" size="lg" icon={ ArrowRight02Icon }>Learn About Inszone</Button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        data-scroll
+        data-scroll-speed={ MEDIA_SPEED }
+        class="order-first relative z-2 h-66 w-full md:h-60 xl:absolute xl:top-0 xl:right-0 xl:h-120 xl:w-1/2 xl:max-w-[660px]"
+      >
+        <div class="reveal-up reveal-after size-full overflow-hidden rounded-t-3xl xl:rounded-3xl">
+          <img
+            src="/images/home/pay-less-be-protected.jpg"
+            alt="Warehouse professional with tablet"
+            loading="lazy"
+            class="size-full object-cover object-top"
+          />
         </div>
       </div>
     </div>
-
-    <div
-      data-scroll
-      data-scroll-speed={ MEDIA_SPEED }
-      class="order-first relative z-2 h-66 w-full md:h-60 xl:absolute xl:top-0 xl:right-0 xl:h-120 xl:w-1/2 xl:max-w-[660px]"
-    >
-      <div class="reveal-up reveal-after size-full overflow-hidden rounded-t-3xl xl:rounded-3xl">
-        <img
-          src="/images/home/pay-less-be-protected.jpg"
-          alt="Warehouse professional with tablet"
-          loading="lazy"
-          class="size-full object-cover object-top"
-        />
-      </div>
-    </div>
-  </div>
+  </Container>
 </section>

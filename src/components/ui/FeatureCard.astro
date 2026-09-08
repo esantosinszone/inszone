@@ -1,17 +1,18 @@
 ---
 /** Icon + label + caption tile used inside the feature trio panel. */
-import type { AstroComponent } from '@/types'
+import type { IconSvgElement } from '@hugeicons/react'
+import Icon from '@/components/icons/Icon.astro'
 import Card from '@/components/ui/Card.astro'
 import Typography from '@/components/ui/Typography.astro'
 
 interface Props {
   label: string
   caption: string
-  icon: AstroComponent
+  icon: IconSvgElement
   class?: string
 }
 
-const { label, caption, icon: Icon, class: className } = Astro.props
+const { label, caption, icon, class: className } = Astro.props
 /** Labels carry a hard break so the two-line rhythm survives the wide layout. */
 const lines = label.split( '\n' )
 ---
@@ -23,8 +24,8 @@ const lines = label.split( '\n' )
     className,
   ] }
 >
-  <span class="inline-flex size-12 shrink-0 md:size-16" aria-hidden="true">
-    <Icon />
+  <span class="inline-flex size-12 shrink-0 md:size-16 text-primary-950" aria-hidden="true">
+    <Icon icon={ icon } />
   </span>
   <div class="flex flex-col gap-2 md:gap-4">
     <Typography variant="inherit" as="h3" class="text-xs leading-tight font-bold text-primary-950 md:text-2xl md:leading-[1.1]">

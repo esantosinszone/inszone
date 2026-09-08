@@ -16,7 +16,8 @@
  * running down the icon column.
  */
 import { processSteps } from '@/data/home'
-import ArrowRightIcon from '@/components/icons/ArrowRightIcon.astro'
+import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
+import Icon from '@/components/icons/Icon.astro'
 import ProcessLine from '@/components/icons/ProcessLine.astro'
 import Button from '@/components/ui/Button.astro'
 import Container from '@/components/ui/Container.astro'
@@ -51,9 +52,9 @@ const NUMERAL_BASE =
 ---
 
 <section
-  class="overflow-hidden bg-linear-to-b from-white to-primary-100 py-12 md:py-30 pb-12 md:from-[54.67%] md:to-primary-50"
+  class="stack overflow-hidden bg-linear-to-b from-white to-primary-100 md:from-[54.67%] md:to-primary-50"
 >
-  <Container class="@container">
+  <Container class="@container py-[var(--section-py)]">
     <div class="relative">
       <div
         class="relative z-9 mb-6 flex flex-col gap-1 @[900px]:absolute @[900px]:top-0 @[900px]:left-0 @[900px]:mb-0 @[900px]:w-[42.42cqw]"
@@ -70,7 +71,7 @@ const NUMERAL_BASE =
             Smarter insurance means more protection, more savings, and peace of mind for what
             matters most.
           </Typography>
-          <Button href="/quote" size="lg" icon={ ArrowRightIcon } class="reveal-left">Get Started</Button>
+          <Button href="/quote" size="lg" icon={ ArrowRight02Icon } class="reveal-left">Get Started</Button>
         </div>
       </div>
 
@@ -87,7 +88,7 @@ const NUMERAL_BASE =
           class="reveal-draw absolute top-0 left-0 z-1 hidden text-primary-200 @[900px]:block"
         />
 
-        { processSteps.map(({ title, description, icon: Icon }, index) => (
+        { processSteps.map(({ title, description, icon }, index) => (
           <div
             class:list={ [
               'reveal-up relative flex min-w-0 flex-1 flex-row items-start gap-4 @[900px]:flex-col @[900px]:items-end @[900px]:gap-[0.91cqw]',
@@ -103,7 +104,7 @@ const NUMERAL_BASE =
               class="relative z-2 inline-flex size-20 shrink-0 items-center justify-center rounded-full bg-white text-primary-500 drop-shadow-[0_16px_32px_rgba(2,6,24,0.12)] @[900px]:size-[6.06cqw]"
             >
               <span class="inline-flex size-12 @[900px]:size-[3.64cqw]">
-                <Icon />
+                <Icon icon={ icon } />
               </span>
             </span>
             <div

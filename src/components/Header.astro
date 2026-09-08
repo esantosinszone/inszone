@@ -1,9 +1,10 @@
 ---
 const { pathname } = Astro.url
-import { HugeiconsIcon } from '@hugeicons/react'
-import { CallIncoming04Icon, ArrowRight02Icon } from '@hugeicons/core-free-icons'
+import { CallIncoming04Icon, Menu01Icon } from '@hugeicons/core-free-icons'
+import Icon from '@/components/icons/Icon.astro'
+import Container from '@/components/ui/Container.astro'
+import MobileNav from '@/components/MobileNav.astro'
 import type { Nav } from '@/types'
-import MainButton from '@/components/ui/MainButton.astro'
 
 const normalizedPathName =
 	pathname.length > 1 && pathname.endsWith("/") ? pathname.slice(0, -1) : pathname
@@ -23,12 +24,27 @@ const nav: Nav[] = [
   id="header"
   class="fixed top-0 left-0 w-full flex flex-col items-center transition-inszone z-50"
 >
-  <div class="w-full max-w-8xl h-24 px-8 2xl:px-0 flex items-center justify-between transition-inszone">
-    <a href="/"><img src="/images/logo.svg" alt="Inszone Insurance Services Logo" width="124" height="56"/></a>
-    <nav class="flex font-semibold leading-none">
+  <!-- No transition here: the sticky states (.ghost/.show) are all on #header,
+       so the only thing this bar's `transition: all` ever animated was its own
+       height and the logo's width when the viewport crosses md — an 0.8s lag on
+       resize with nothing to show for it. -->
+  <Container class="h-20 md:h-24 flex items-center justify-between">
+    <!-- `width`/`height` stay at the intrinsic size so the browser reserves the
+         right box before the SVG lands; `h-auto` lets the class-driven width
+         drive the height from that ratio. -->
+    <a href="/">
+      <img
+        src="/images/logo.svg"
+        alt="Inszone Insurance Services Logo"
+        width="124"
+        height="56"
+        class="h-auto w-[100px] md:w-[124px]"
+      />
+    </a>
+    <nav class="hidden xl:flex font-semibold leading-none">
       { nav.map(({ label, path, active, isScrollLink }) => (
-        <a 
-          class={`hover:text-primary-950 flex py-4 px-5 rounded relative transition-all duration-300 ${ active ? "bg-primary-100 text-primary-950" : "" }`} 
+        <a
+          class={`hover:text-primary-950 flex py-4 px-5 rounded relative transition-all duration-300 ${ active ? "bg-primary-100 text-primary-950" : "" }`}
           href={ path }
         >
           { label }
@@ -37,16 +53,40 @@ const nav: Nav[] = [
       }
     </nav>
     <div class="flex items-center gap-2">
-      <div class="flex items-center gap-1 text-primary-950">
-        <HugeiconsIcon icon={CallIncoming04Icon} strokeWidth={1} size={48} />
-        <div class="flex flex-col gap-1">
+      <!-- A `tel:` link rather than a div with `cursor-pointer`: it gets the
+           pointer natively, and tapping it actually dials instead of just
+           looking like it would. Below xl only the icon survives — the number
+           is one tap away and the bar has no room for it. -->
+      <a href="tel:+18778526408" class="call flex items-center gap-1 text-primary-950">
+        <span class="inline-flex size-12">
+          <Icon icon={ CallIncoming04Icon } />
+        </span>
+        <div class="hidden xl:flex flex-col gap-1">
           <div class="leading-none font-semibold">Call Us Now!</div>
           <div class="font-bold text-2xl leading-none">(877) 852-6408</div>
         </div>
-      </div>
+      </a>
+
+      <button
+        type="button"
+        id="menu-toggle"
+        data-nav-toggle
+        aria-controls="mobile-nav"
+        aria-expanded="false"
+        aria-label="Open menu"
+        class="inline-flex size-12 cursor-pointer items-center justify-center rounded-lg text-primary-950 transition-colors hover:bg-primary-100 xl:hidden"
+      >
+        <span class="inline-flex size-7"><Icon icon={ Menu01Icon } /></span>
+      </button>
     </div>
-  </div>
+  </Container>
+
 </header>
+
+<MobileNav />
+
+
+
 
 <style>
   .ghost {
@@ -56,6 +96,36 @@ const nav: Nav[] = [
     background-color: white;
     transform: translateY(0);
     box-shadow: 0 12px 56px rgba(0,46,78,0.08);
+  }
+
+  /* Hovering the call block nudges the arrow of the incoming-call glyph toward
+     the handset, on a loop. The arrow is the glyph's first path, which is why
+     the phone renders through `Icon.astro` — it emits each path separately, so
+     one part can be animated on its own.
+
+     The travel follows the arrow's own axis: its shaft runs from (21,3) to
+     (15.4,8.6) in the 24-unit viewBox, i.e. down and to the left.
+
+     The travel is centred on the resting position — out one way, in the other
+     — rather than only inward, so it reads as a bigger swing without the arrow
+     burying itself in the handset at the near end.
+
+     Symmetric `ease-in-out` rather than the project curve: that one is
+     deliberately fast-out/slow-settle, which on a short ping-pong reads as a
+     twitch instead of a drift. */
+  @keyframes call-arrow-nudge {
+    from { transform: translate(1.6px, -1.6px); }
+    to   { transform: translate(-1.6px, 1.6px); }
+  }
+
+  .call:hover :global([data-icon-part='0']) {
+    animation: call-arrow-nudge 0.35s ease-in-out infinite alternate;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .call:hover :global([data-icon-part='0']) {
+      animation: none;
+    }
   }
 </style>
 

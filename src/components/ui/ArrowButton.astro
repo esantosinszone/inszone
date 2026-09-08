@@ -1,7 +1,8 @@
 ---
 /** Circular carousel control. */
 import type { HTMLAttributes } from 'astro/types'
-import ArrowRightSmallIcon from '@/components/icons/ArrowRightSmallIcon.astro'
+import { ArrowRight02Icon } from '@hugeicons/core-free-icons'
+import Icon from '@/components/icons/Icon.astro'
 
 interface Props extends HTMLAttributes<'button'> {
   direction: 'prev' | 'next'
@@ -20,6 +21,6 @@ const { direction, class: className, ...rest } = Astro.props
   { ...rest }
 >
   <span class:list={ [ 'inline-flex size-5', direction === 'prev' && '-scale-x-100' ] }>
-    <ArrowRightSmallIcon />
+    <Icon icon={ ArrowRight02Icon } />
   </span>
 </button>

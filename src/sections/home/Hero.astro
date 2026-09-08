@@ -16,39 +16,73 @@ const insurances: ServiceProps[] = [
 ]
 ---
 
-<section class="my-24 max-w-8xl mx-auto relative reveal-fade px-8 2xl:px-0 z-20">
+<!-- mt: clearance for the fixed header, not decorative padding — it tracks
+     the header's own height, which drops to 80px below md.
+
+     max-md:z-0 is what keeps the panel INSIDE this section: the panel carries
+     z-30 for the desktop overlap, and with no z-index here the section never
+     opens a stacking context, so that 30 competes in the root against the next
+     section and paints over it. A z-index of 0 contains it. -->
+<section class="mt-20 md:mt-24 mb-[var(--section-py)] max-w-[calc(var(--container-8xl)+2*var(--section-pad))] mx-auto relative reveal-fade max-md:z-0 max-md:mb-0 px-0 md:px-[var(--section-pad)] xl:z-20">
   <div class="relative">
-    <div class="absolute z-30 top-6 left-6 bottom-18 w-3xl gradient-inszone-dark rounded-3xl text-white p-14 flex flex-col gap-6 justify-center">
+    <div class="relative z-30 w-full rounded-3xl gradient-inszone-dark text-white p-[var(--section-pad)] flex flex-col gap-6 justify-center xl:p-14 max-md:rounded-b-none max-md:pb-[calc(var(--section-pad)+1.5rem)] xl:absolute xl:top-6 xl:left-6 xl:bottom-18 xl:w-3xl">
       <div class="flex flex-col gap-2">
-        <h1 class="reveal-left text-5xl font-semibold">Real relationships.<br>Local agents.<br>National support.</h1>
-        <h2 class="reveal-left text-3xl text-primary-300 font-medium">Personal, Commercial, and Benefits Insurance</h2>
+        <h1 class="reveal-left text-hero-title leading-[1.1] font-semibold">Real relationships.<br>Local agents.<br>National support.</h1>
+        <h2 class="reveal-left text-hero-subtitle leading-[1.2] text-primary-300 font-medium">Personal, Commercial, and Benefits Insurance</h2>
       </div>
       <div class="flex flex-col gap-4 reveal-left">
         <h3 class="font-semibold text-lg leading-none">Get a Free Quote Today</h3>
+        <!-- Below md the three cards restack as tiles — icon over a centred
+             label — and swap the flat white tint for the tinted-glass fill the
+             staging build uses: a light-to-dark gradient blended over the brand
+             blue, going to a white-to-black gradient over primary-100 when
+             picked. The blend mode is spelled out as `overlay, normal` (one
+             value per layer) so only the gradient blends; a single value would
+             blend the solid colour with whatever is behind the panel too. -->
         <div class="flex gap-4">
-          { insurances.map(({ label, icon }) => (
-            <div class="flex-1 active:scale-95 transition-transform">
-              <input type="radio" id={ label } name="insurance" class="sr-only peer">
-              <label for={ label } class="relative flex items-center gap-2 bg-white/8 hover:bg-white/16 peer-checked:bg-white/24 peer-checked:[&_.tick]:opacity-100 cursor-pointer rounded-lg p-4 transition">
-                <span class="tick opacity-0 absolute top-2 right-2 size-5 rounded-full bg-primary-950 flex items-center justify-center">
+          { insurances.map(({ label, icon }, index) => (
+            <div class="min-w-0 flex-1 active:scale-95 transition-transform">
+              <input type="radio" id={ label } name="insurance" class="sr-only peer" checked={ index === 0 }>
+              <label
+                for={ label }
+                class="relative flex items-center gap-2 bg-white/8 hover:bg-white/16 peer-checked:bg-white/24 peer-checked:[&_.tick]:opacity-100 cursor-pointer rounded-lg p-4 transition max-md:flex-col max-md:justify-center max-md:gap-3 max-md:rounded-xl max-md:px-5 max-md:py-4 max-md:bg-primary-500 max-md:[background-image:linear-gradient(180deg,#ffffff3d_0%,#0000003d_100%)] max-md:[background-blend-mode:overlay,normal] max-md:shadow-[0_8px_6px_#02061866] max-md:peer-checked:bg-primary-100 max-md:peer-checked:[background-image:linear-gradient(#fff_0%,#000_100%)] max-md:peer-checked:text-primary-950 max-md:peer-checked:shadow-[0_8px_12px_#02061866]"
+              >
+                <!-- `text-white` is explicit because the picked card turns its
+                     own text primary-950, and the tick sits on a primary-950
+                     badge — inheriting would make it invisible. -->
+                <span class="tick opacity-0 absolute top-2 right-2 size-5 rounded-full bg-primary-950 text-white flex items-center justify-center">
                   <HugeiconsIcon icon={ Tick02Icon } size={ 12 } strokeWidth={ 4 } />
                 </span>
                 <HugeiconsIcon icon={ icon } size={ 48 } strokeWidth={ 1 } />
-                <span class="font-semibold">{ label }</span>
+                <span class="font-semibold max-md:text-center max-md:text-sm max-md:leading-[1.2] max-md:font-bold">{ label }</span>
               </label>
             </div>
             ))
           }
         </div>
+        <!-- Below md the whole row drops from 64px tall to 48px, matching the
+             staging build: shorter field, 14px placeholder, and a CTA that stops
+             hugging its label and instead shares the row with the field, pushing
+             its arrow out to the right edge. -->
         <div class="flex">
-          <input type="text" placeholder="Enter Zip Code" class="placeholder-white px-6 h-16 flex-1 border-2 border-r-0 border-primary rounded-tl-lg rounded-bl-lg">
-          <MainButton icon={ ArrowRight02Icon } iconStroke={ 2 } size="lg" variant="main" class="rounded-tl-none rounded-bl-none">
+          <input
+            type="text"
+            placeholder="Enter Zip Code"
+            class="placeholder-white px-6 h-16 min-w-0 flex-1 border-2 border-r-0 border-primary rounded-tl-lg rounded-bl-lg max-md:h-12 max-md:px-4 max-md:text-sm"
+          >
+          <MainButton
+            icon={ ArrowRight02Icon }
+            iconStroke={ 2 }
+            size="lg"
+            variant="main"
+            class="rounded-tl-none rounded-bl-none max-md:h-12 max-md:flex-1 max-md:justify-center max-md:gap-1 max-md:px-4 max-md:text-sm max-md:whitespace-nowrap"
+          >
             Start My Quote
           </MainButton>
         </div>
       </div>
     </div>
-    <img src="/images/inszone-insurance-services.webp" alt="" class="hero-notch min-h-160 rounded-3xl rounded-tl-[3rem] rounded-bl-[6rem] overflow-hidde z-10 object-cover object-bottom">
-    <img src="/images/inszone-insurance-services-man.webp" alt="" class="absolute min-h-[662px] rounded-3xl bottom-0 left-0 z-20 object-cover object-bottom">
+    <img src="/images/inszone-insurance-services.webp" alt="" class="hidden xl:block hero-notch min-h-160 rounded-3xl rounded-tl-[3rem] rounded-bl-[6rem] overflow-hidde z-10 object-cover object-bottom">
+    <img src="/images/inszone-insurance-services-man.webp" alt="" class="hidden xl:block absolute min-h-[662px] rounded-3xl bottom-0 left-0 z-20 object-cover object-bottom">
   </div>
 </section>

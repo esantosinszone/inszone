@@ -1,4 +1,5 @@
-import type { SocialNetwork } from '@/components/icons/social'
+import type { IconSvgElement } from '@hugeicons/react'
+import { Facebook02Icon, NewTwitterIcon, InstagramIcon, Linkedin02Icon } from '@hugeicons/core-free-icons'
 
 export interface FooterLink {
   label: string
@@ -54,15 +55,16 @@ export const footerColumns: FooterColumn[] = [
 ]
 
 export interface SocialLink {
-  network: SocialNetwork
+  label: string
   href: string
+  icon: IconSvgElement
 }
 
 export const socialLinks: SocialLink[] = [
-  { network: 'facebook', href: 'https://facebook.com/inszone' },
-  { network: 'x', href: 'https://twitter.com/inszone' },
-  { network: 'instagram', href: 'https://instagram.com/inszone' },
-  { network: 'linkedin', href: 'https://linkedin.com/company/inszone' },
+  { label: 'Facebook', href: 'https://facebook.com/inszone', icon: Facebook02Icon },
+  { label: 'X / Twitter', href: 'https://twitter.com/inszone', icon: NewTwitterIcon },
+  { label: 'Instagram', href: 'https://instagram.com/inszone', icon: InstagramIcon },
+  { label: 'LinkedIn', href: 'https://linkedin.com/company/inszone', icon: Linkedin02Icon },
 ]
 
 export const legal = {

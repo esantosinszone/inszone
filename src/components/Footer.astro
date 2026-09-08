@@ -1,14 +1,14 @@
 ---
 import { footerColumns, socialLinks, legal } from '@/data/footer'
-import SocialIcon from '@/components/icons/SocialIcon.astro'
+import Icon from '@/components/icons/Icon.astro'
 import TrustedChoiceBadge from '@/components/icons/TrustedChoiceBadge.astro'
 import Container from '@/components/ui/Container.astro'
 import Typography from '@/components/ui/Typography.astro'
 ---
 
-<footer class="bg-neutral-900">
+<footer class="stack bg-neutral-900">
   <div class="rounded-tr-4xl bg-neutral-900">
-    <Container class="flex flex-col items-start justify-between gap-8 py-15 xl:flex-row xl:gap-10">
+    <Container class="flex flex-col items-start justify-between gap-8 py-[var(--section-py)] xl:flex-row xl:gap-10">
       <div class="flex w-full shrink-0 flex-row items-center justify-between gap-4 xl:w-auto xl:justify-start xl:gap-8">
         <a href="/" aria-label="Inszone Insurance">
           <img src="/images/brand/logo-inszone-white.svg" alt="Inszone Insurance" width="124" height="56" />
@@ -38,14 +38,14 @@ import Typography from '@/components/ui/Typography.astro'
             Connect with Us
           </Typography>
           <div class="flex items-center gap-2">
-            { socialLinks.map(({ network, href }) => (
+            { socialLinks.map(({ label, href, icon }) => (
               <a
                 href={ href }
                 target="_blank"
                 rel="noopener"
                 class="inline-flex size-10 items-center justify-center rounded-full bg-primary-500 text-white transition-opacity duration-150 hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-300"
               >
-                <span class="inline-flex size-[18px]"><SocialIcon network={ network } /></span>
+                <span class="inline-flex size-[18px]"><Icon icon={ icon } /></span>
               </a>
             ))}
           </div>
@@ -55,7 +55,7 @@ import Typography from '@/components/ui/Typography.astro'
   </div>
 
   <div class="bg-neutral-900">
-    <Container class="flex flex-col items-start gap-4 border-t border-white/16 py-7 text-sm leading-[1.4] text-neutral-300 md:flex-row md:items-center md:gap-7 md:py-8 md:whitespace-nowrap">
+    <Container class="flex flex-col items-start gap-4 border-t border-white/16 py-[calc(1.75rem*var(--section-scale))] text-sm leading-[1.4] text-neutral-300 md:flex-row md:items-center md:gap-7 md:py-8 md:whitespace-nowrap">
       <span>{ legal.copyright }</span>
       <span>{ legal.license }</span>
     </Container>
